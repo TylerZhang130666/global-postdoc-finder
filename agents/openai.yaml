@@ -1,0 +1,4 @@
+interface:
+  display_name: "Global Postdoc Finder"
+  short_description: "Find and rank postdoc opportunities worldwide"
+  default_prompt: "Use $global-postdoc-finder to turn my research profile and preferences into a verified, prioritized global postdoc search plan."
