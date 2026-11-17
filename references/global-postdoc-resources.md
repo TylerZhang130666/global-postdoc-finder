@@ -63,12 +63,12 @@ Search `research fellow`, `research scientist`, and `postdoctoral fellow`.
 
 Search `post-doc`, `postdoctoral researcher`, `연수직`, and `박사후연구원`. Verify foreign-applicant and language requirements.
 
-### China, Hong Kong, and Taiwan
+### China: Mainland, Hong Kong SAR, and Taiwan region
 
 - Mainland China national postdoctoral system/reference: https://www.chinapostdoctor.org.cn/
 - Mainland China: search official university and Chinese Academy of Sciences institute sites.
-- Hong Kong: search official HKU, CUHK, HKUST, CityU, PolyU, and other institution career pages.
-- Taiwan: search Academia Sinica and university career pages: https://www.sinica.edu.tw/en
+- Hong Kong SAR, China: search official HKU, CUHK, HKUST, CityU, PolyU, and other institution career pages.
+- Taiwan region, China: search Academia Sinica and university career pages: https://www.sinica.edu.tw/en
 
 For mainland China search `博士后招聘` plus discipline and institution. Treat registration systems and job advertisements separately. Verify housing, municipal subsidies, performance conditions, and entry/exit procedures.
 
@@ -137,3 +137,5 @@ Search adjacent titles such as `scientist`, `research officer`, `consultant`, `f
 - `monitor`: group, institute, funding call, or portal rather than a vacancy.
 
 Preserve currency, pay period, gross/net status, contract duration, employee/fellow status, and exact source wording. State sponsorship facts only when explicitly supported.
+
+Availability does not establish candidate eligibility or access to an invitation-only stage. Keep these as separate fields; a host page is not a job notice. Resolve conflicting institutions and deadlines field by field and record unresolved facts as unknown. Apply the current [screening and action rules](screening-and-scoring.md) rather than treating a retained Apply button or a secondary site's future date as proof of openness.

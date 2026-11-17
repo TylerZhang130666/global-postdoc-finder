@@ -1,0 +1,27 @@
+{
+  "run_id": "A01_20261118",
+  "as_of": "2026-11-18",
+  "timezone": "Europe/Berlin",
+  "scope": "global; no regional preference",
+  "expected_phd": "2027-06",
+  "earliest_start_assumed": "2027-07-01",
+  "stats": {
+    "records": 18,
+    "countries": 13,
+    "queries": 35,
+    "vacancies": 11,
+    "fellowships": 4,
+    "hosts": 3,
+    "excluded": 5,
+    "ready_to_apply_confirmed": 0
+  },
+  "method": "AI-led browsing and interpretation; JS and workbook arithmetic checks; conservative action overrides logged separately",
+  "effectiveness_metrics": "Not measured; no independent gold standard or baseline",
+  "original_skill_sha256": "7a7a483e9e2b07b0d90eaf40a5cb95322f5b5f5269a484fee36e1f379f133456",
+  "publication_note": "Generalized candidate summary and reviewed outputs; no original CV, private eligibility supplement, local paths or search history.",
+  "replay_note": "New-rule offline replay is stored separately; historical outputs are not rewritten as a new live run.",
+  "original_output_sha256": {
+    "Global_Postdoc_Trial_Report.html": "c80bfaf51e3848c57f6371ea665a81291bc42d29db4976138d06f510679d7869",
+    "Global_Postdoc_Trial_Tracker.xlsx": "6857fb57cffe0ee785c6b74cda59aa26626bff2cec95d92365c3e173aa76fe4a"
+  }
+}

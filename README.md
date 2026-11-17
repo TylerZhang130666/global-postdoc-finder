@@ -4,6 +4,8 @@
 
 它不会默认欧洲、美国或名校优先。使用者指定哪个国家、地区、城市或机构优先，它就先搜索哪里；只有明确说“全球都可以”时，才进行全球分区搜索。
 
+项目定位是**由 Codex 执行的 AI 搜索与决策工作流**。CV理解、联网检索、来源解释和匹配判断由模型及可用工具完成；Python辅助脚本负责已整理记录的计算与分级，以及常见隐私模式扫描。目前没有独立实现完整的CV解析、招聘抓取或Agent运行平台。
+
 ## 它能做什么
 
 - 从CV或个人填写的资料中提取研究方向、方法和成果证据。
@@ -14,6 +16,9 @@
 - 按研究匹配度、方法匹配度、申请资格、时间和地点等因素评分。
 - 生成A/B/C优先级、差距分析和下一步申请行动。
 - 提供岗位追踪CSV模板和发布前隐私扫描工具。
+- 将资格证据缺失标为待核实，区分确认不符合与尚无证明。
+- 记录机构、日期、研究任务冲突，区分第一阶段与受邀阶段。
+- 分开输出数值匹配分档与行动等级，并解释降级原因。
 
 ## 适合谁
 
@@ -26,7 +31,7 @@
 
 ## 安装
 
-下载或克隆本仓库，将整个 `global-postdoc-finder` 文件夹放入你的 Codex skills 目录。目录中必须保留 `SKILL.md`、`agents`、`assets`、`references` 和 `scripts`。
+下载或克隆本仓库，将包含 `SKILL.md` 的整个目录放入你的 Codex skills 目录，并命名为 `global-postdoc-finder`。保留 `agents`、`assets`、`references` 和 `scripts`；`examples`、`tests`用于查看案例与执行规则测试。
 
 也可以直接让Codex从本仓库安装该Skill。
 
@@ -70,15 +75,27 @@
 - 是否需要签证支持
 - 对合同期限、薪酬或工作形式的要求
 
-可以使用 [`assets/candidate-profile-template.md`](assets/candidate-profile-template.md) 填写候选人画像。
+可以使用 [`assets/candidate-profile-template.md`](assets/candidate-profile-template.md) 填写候选人画像。只有某条真实招聘要求涉及国籍、居留、年龄或申请阶段时，才私下补充最少必要的资格回答；不需要为公开案例提供证件、完整生日或住址。未披露的信息保持未知，不根据语言、姓名或学历背景推断。
 
 ## 结果如何分类
 
-- **公开招聘岗位**：已有经费和正式申请入口的职位。
+- **岗位与招聘线索**：明确区分已核实在招、滚动招聘、已过期和状态未确认；线索不能直接当作可申请岗位。
 - **博士后基金**：需要候选人和导师共同申请的资助，不等于已经获得岗位。
 - **潜在导师或团队**：研究方向匹配，但尚未确认存在空缺，适合联系或长期关注。
 
 搜索结果先按照使用者指定的国家和地区优先级排列，再在同一优先级内部按照匹配度排序。学校名气不作为独立评分项目。
+
+数值匹配分档：A为75分及以上，B为55分至不足75分，C为不足55分。**行动等级另行判断**：
+
+| 行动等级 | 含义 |
+|---|---|
+| A | 分数至少75，来源与当前入口已核实，必需资格与时间条件均有支持。 |
+| B | 值得优先核实或准备；也包括高分但关键资格未知、或尚未开放的后续轮次。 |
+| C | 低匹配、来源冲突/未核实、入口关闭或邀请未确认，暂缓申请。 |
+| Excluded | 确认不符合必需条件，或岗位已过期；先排除再评分。 |
+| Host only | 只表示潜在团队；研究匹配不等于有空缺或经费。 |
+
+例如，“CV没有写荷兰语”属于证据未知；“确认不能满足公告必需语言”才是失败。分数、来源可信度、资格状态、申请阶段和下一步分别保留。规则、JSON输入结构与脚本用法见 [`screening-and-scoring.md`](references/screening-and-scoring.md)。
 
 ## 全球网站参考
 
@@ -88,6 +105,74 @@
 - [`references/中文使用指南.md`](references/中文使用指南.md)
 
 参考范围包括欧洲、美国、加拿大、日本、新加坡、韩国、中国大陆、中国香港、中国台湾、印度、澳大利亚、新西兰、中东、非洲、拉丁美洲以及国际组织。
+
+## 匿名案例与真实运行结果
+
+### 2026年11月18日全球首轮试跑
+
+输入为一位研究农业土壤物理、结构变化、冻融、水文响应与侵蚀的博士候选人，预计2027年6月毕业；暂按2027年7月最早入职筛选。候选人明确选择全球范围，不设地区优先级。公开资料概括了候选人的机构、导师和成果，删除联系方式、论文标题、DOI及项目编号；保留岗位匹配所需的方法和成果状态。
+
+检索词由 `postdoctoral researcher / research fellow` 与 `soil physics / soil structure / erosion / X-ray CT / soil hydraulic properties` 等主题、方法组合生成；按地区组发现线索，再核对雇主、基金与团队页面。期刊数量和能力来自CV自述，本轮未恢复身份核验论文。
+
+| 首次试跑统计 | 实际记录 |
+|---|---:|
+| 关键词查询 | 35 |
+| 结构化记录 | 18 |
+| 岗位与招聘线索 | 11 |
+| 博后基金路线 | 4 |
+| 潜在团队 | 3 |
+| 保留记录涉及国家 | 13 |
+| 当时标为排除的岗位 | 5 |
+| 资格与入职时间均已确认可直接投递的岗位 | 0 |
+
+这里的13个国家不是同等深度覆盖；七个地区组只做了首轮探索，部分国家没有取得可保留的匹配公告。18条记录也不等于18个仍开放的岗位。
+
+部分结果如下。所有日期与状态均属于**2026年11月18日快照**，使用时须重新核查。
+
+| 记录 | 首次试跑结果 | 判断与下一步 |
+|---|---|---|
+| [中国农科院土壤三维结构岗位](https://iarrp.caas.cn/gglm/rczp/7fad574570c4473c9fc3c18061053792.htm) | 74分，行动B | 官网滚动招聘；核实名额、2027年到岗和进站条件。孔隙CT与剖面三维建模不能等同。 |
+| [日本JSPS 2027第二轮](https://www.jsps.go.jp/english/e-fellow/e-ippan/appliguidelines.html) | 76分，行动B | 公布2027年4月23日机构截止；接收导师和个人资格尚未确认，不能因高分直接列A。 |
+| [巴西FAPESP](https://fapesp.br/en/postdoc) | 74分，行动B | 全年受理的联合申请路线，需要接收导师；不是现成岗位。 |
+| [美国USDA/ORISE土壤成像](https://www.zintellect.com/PdfGenerator/OpportunityDetailsPdf/30388) | Excluded | 最晚2026年底取得博士的要求与预计毕业时间冲突；另有美国公民限制，未推断候选人国籍。 |
+| [新加坡土壤建模线索](https://ntu.wd3.myworkdayjobs.com/en-US/Careers/job/Research-Fellow--Ecology-Biogeochemistry-Earth-Science-Soil-Science-Environmental-Science-Hydrology-Computer-Science-_R00025083) | 54分，行动C | 聚合页标NUS，雇主索引显示NTU；不采用聚合截止日。当前开放状态未确认。 |
+| [KAUST Global Fellowship](https://kgfp.kaust.edu.sa/how-to-apply) | 行动C，未评分 | 第一阶段已过截止；第二阶段只对受邀者开放，未来截止不等于接受新申请。 |
+
+原始输出与完整来源证据：
+
+- [匿名候选人输入摘要](examples/anonymous-trial-2026-11-18/candidate-profile.md)
+- [案例过程、问题与修正说明](examples/anonymous-trial-2026-11-18/case-study.md)
+- [原始HTML报告](examples/anonymous-trial-2026-11-18/Global_Postdoc_Trial_Report.html)（GitHub可查看源码，下载后可在浏览器打开）
+- [原始Excel追踪表](examples/anonymous-trial-2026-11-18/Global_Postdoc_Trial_Tracker.xlsx)
+- [原始18条结构化结果](examples/anonymous-trial-2026-11-18/original-results.json)
+- [运行范围与原始输出校验值](examples/anonymous-trial-2026-11-18/run-manifest.json)
+
+### 保留错误并展示规则修正
+
+首次试跑使用了旧版Skill，并有人工保守降级，不能作为新版效果基准。其中一处判断过严：WUR岗位要求荷兰语，但CV未写这一能力，当时按材料证据不足记入排除。新版改为资格未知，不再把缺少证据当作确认失败。
+
+使用同一批已保存证据进行**新版规则离线回放**，得到：A为0、B为4、C为7、确认排除为4、潜在团队为3。C中的WUR记录需要先核实荷兰语证据，不能解释成已证明不符合。本次回放没有重新联网、补齐个人资格或证明旧网页仍有效。
+
+- [回放输入及逐项资格判断](examples/anonymous-trial-2026-11-18/normalized-records.json)
+- [新版规则回放结果](examples/anonymous-trial-2026-11-18/replayed-results.json)
+
+这是一个真实联网的功能案例，加上一轮静态规则回放。尚未进行独立人工盲审、多候选人重复测试或同预算普通提示词对照，因此没有实测准确率、召回率、时间节省或效果提升指标。
+
+## 辅助脚本与验证
+
+`evaluate_records.py`读取人工/AI解释后的JSON证据，执行评分计算和行动门槛；不联网、不解析CV、不核验网页内容。它保留输入证据、未知条件、匹配分档及行动降级原因。
+
+在仓库根目录执行：
+
+```text
+python scripts/evaluate_records.py examples/anonymous-trial-2026-11-18/normalized-records.json --as-of 2026-11-18 --out replay.json
+python -m unittest discover -s tests -v
+python scripts/privacy_scan.py .
+```
+
+测试覆盖评分阈值、缺失资格、过期岗位、二手截止日、邀请阶段、未来轮次、重复ID、缺失分数与无效输入，以及隐私扫描中日期与电话模式的区分。测试通过只证明这些规则按输入执行，不能证明检索与人工解释准确。
+
+岗位追踪CSV模板保留原有35列，并追加资格状态、证据状态、阶段入口、时间原文与时区、原始分档、行动等级和解释等字段。结构化资格对象在CSV中以JSON文本存储；脚本直接使用JSON记录，字段定义见筛选参考。
 
 ## 隐私说明
 
@@ -105,7 +190,9 @@
 python scripts/privacy_scan.py .
 ```
 
-该脚本只能发现常见风险，不能代替人工检查。
+该脚本只扫描支持的文本格式（包括Markdown、JSON和HTML）中的常见模式，不能可靠识别人名，也不解析PDF、Word或Excel内部内容。它不能证明材料匿名。Office属性、批注、链接和全文，以及论文组合、导师与机构组合等可反查信息，需要另外检查。
+
+本仓库案例是经审阅的概括输入和运行结果；不含原始CV、私人资格补充、浏览器记录或本地检索历史。保留的研究细节仍可能与公开资料关联，不应据此宣称无法重新识别身份。
 
 ## 重要提醒
 

@@ -1,0 +1,718 @@
+[
+  {
+    "record_id": "J01",
+    "opportunity_type": "advertised_job",
+    "title": "博士后 土壤三维结构模拟",
+    "institution": "中国农业科学院农业资源与农业区划研究所",
+    "source_url": "https://iarrp.caas.cn/gglm/rczp/7fad574570c4473c9fc3c18061053792.htm",
+    "date_checked": "2026-11-18",
+    "source_locator": "应聘条件；报名材料第3项；报名截止日期",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "pass",
+        "evidence": "本快照中的已完成硕士或预计博士时间与该入口允许的学位时点兼容；毕业预测不是已获博士。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "age_limit",
+        "result": "unknown",
+        "evidence": "公开材料不含相关年龄资格回答。"
+      },
+      {
+        "criterion": "recent_publications",
+        "result": "unknown",
+        "evidence": "匿名CV保留论文数量，但不含可核对近三年SCI要求的日期与证明。"
+      }
+    ],
+    "scores": [
+      5,
+      3,
+      3,
+      3,
+      3,
+      5
+    ],
+    "legacy_run_priority": "B",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "J02",
+    "opportunity_type": "advertised_job",
+    "title": "Research Fellow in Computational Ecology and Soil Modelling",
+    "institution": "Nanyang Technological University NTU",
+    "source_url": "https://ntu.wd3.myworkdayjobs.com/en-US/Careers/job/Research-Fellow--Ecology-Biogeochemistry-Earth-Science-Soil-Science-Environmental-Science-Hydrology-Computer-Science-_R00025083",
+    "date_checked": "2026-11-18",
+    "source_locator": "Job Requirements；Hiring Institution",
+    "evidence_status": "indexed_only",
+    "application_access": "unconfirmed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": [
+      3,
+      2,
+      3,
+      2,
+      3,
+      4
+    ],
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "J03",
+    "opportunity_type": "advertised_job",
+    "title": "Postdoctoral scientist in interdisciplinary floodplain research",
+    "institution": "University of Cologne",
+    "source_url": "https://jobportal.uni-koeln.de/ausschreibung/renderFile/2796?propertyName=flyer",
+    "date_checked": "2026-11-18",
+    "source_locator": "PDF page 1 YOUR PROFILE；聘用段与末尾申请段",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "公告有明确语言要求，但匿名CV没有对应语言或等级的充分证据；不等于确认不会。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": [
+      4,
+      3,
+      3,
+      1,
+      3,
+      4
+    ],
+    "legacy_run_priority": "B",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2026-12-04",
+    "deadline_verified": true
+  },
+  {
+    "record_id": "J04",
+    "opportunity_type": "advertised_job",
+    "title": "Postdoctoral opportunities in subsurface energy systems and geomechanics",
+    "institution": "McGill University",
+    "source_url": "https://www.mcgill.ca/research/about/mcgill-eddie-goldenberg-research-chairs/chloe-arson",
+    "date_checked": "2026-11-18",
+    "source_locator": "雇主个人介绍；转载海报page 1",
+    "evidence_status": "unconfirmed",
+    "application_access": "unconfirmed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": [
+      2,
+      2,
+      3,
+      5,
+      3,
+      3
+    ],
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "J05",
+    "opportunity_type": "advertised_job",
+    "title": "Digital Soil Mapping and Subsoil Modelling DeepHorizon",
+    "institution": "INRAE",
+    "source_url": "https://deephorizon.eu/",
+    "date_checked": "2026-11-18",
+    "source_locator": "二手页面描述；项目主页不可读",
+    "evidence_status": "secondary_only",
+    "application_access": "unconfirmed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": [
+      4,
+      3,
+      3,
+      2,
+      3,
+      4
+    ],
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "J06",
+    "opportunity_type": "advertised_job",
+    "title": "Plant Ecology Postdoctoral Fellowship",
+    "institution": "University of South Africa UNISA",
+    "source_url": "https://www.unisa.ac.za/sites/corporate/default/Colleges/Agriculture-&-Environmental-Sciences/Schools,-departments,-centres-&-units/Unit/Applied-Behavioural-Ecology-&-Ecosystem-Research-Unit-(ABEERU)",
+    "date_checked": "2026-11-18",
+    "source_locator": "招聘板Affiliation and application段",
+    "evidence_status": "conflicting",
+    "application_access": "unconfirmed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": [
+      2,
+      2,
+      2,
+      2,
+      3,
+      2
+    ],
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "E01",
+    "opportunity_type": "advertised_job",
+    "title": "Researcher in Soil Science Fertilization and Farming Systems",
+    "institution": "Wageningen University and Research",
+    "source_url": "https://www.wur.nl/en/vacancy/researcher-soil-science-fertilization-and-farming-systems",
+    "date_checked": "2026-11-18",
+    "source_locator": "Your job开头；Important information；右侧栏",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "pass",
+        "evidence": "本快照中的已完成硕士或预计博士时间与该入口允许的学位时点兼容；毕业预测不是已获博士。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "公告有明确语言要求，但匿名CV没有对应语言或等级的充分证据；不等于确认不会。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "Excluded",
+    "normalization_note": "修正旧试跑的材料筛选：CV未写荷兰语改为unknown，不能继续作为确认的硬性失败。",
+    "deadline_date": "2026-11-23",
+    "deadline_verified": true
+  },
+  {
+    "record_id": "E02",
+    "opportunity_type": "advertised_job",
+    "title": "Postdoctoral Researcher Training AI in Soil Science",
+    "institution": "Helmholtz Centre for Environmental Research UFZ",
+    "source_url": "https://www.egu.eu/jobs/8518/",
+    "date_checked": "2026-11-18",
+    "source_locator": "Application deadline；Your profile",
+    "evidence_status": "verified",
+    "application_access": "closed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "公告有明确语言要求，但匿名CV没有对应语言或等级的充分证据；不等于确认不会。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "Excluded",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2026-10-19",
+    "deadline_verified": true,
+    "availability_closed": true
+  },
+  {
+    "record_id": "E03",
+    "opportunity_type": "advertised_job",
+    "title": "Postdoctoral Research Fellow in Soil Security for Cotton Farming Systems",
+    "institution": "University of Sydney",
+    "source_url": "https://usyd.wd105.myworkdayjobs.com/en-US/USYD_EXTERNAL_CAREER_SITE/job/Postdoctoral-Research-Fellow-in-Soil-Security-for-Cotton-Farming-Systems_0156263-1",
+    "date_checked": "2026-11-18",
+    "source_locator": "Applications Close；job requisition 0156263",
+    "evidence_status": "verified",
+    "application_access": "closed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "Excluded",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2026-10-23",
+    "deadline_verified": true,
+    "availability_closed": true
+  },
+  {
+    "record_id": "E04",
+    "opportunity_type": "advertised_job",
+    "title": "Postdoc in Merging Soil Physics Knowledge and Data driven Modeling",
+    "institution": "Aarhus University",
+    "source_url": "https://au.career.emply.com/api/pdf/generate-vacancy-ad?adId=57c7e4b5-3d38-48ed-8763-8889cd344764&languageKey=en-GB",
+    "date_checked": "2026-11-18",
+    "source_locator": "PDF page 1 Application Deadline",
+    "evidence_status": "verified",
+    "application_access": "closed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "Excluded",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2026-01-05",
+    "deadline_verified": true,
+    "availability_closed": true
+  },
+  {
+    "record_id": "E05",
+    "opportunity_type": "advertised_job",
+    "title": "USDA ARS Image Based Soil Health Analysis Postdoctoral Fellowship",
+    "institution": "USDA ARS via ORISE",
+    "source_url": "https://www.zintellect.com/PdfGenerator/OpportunityDetailsPdf/30388",
+    "date_checked": "2026-11-18",
+    "source_locator": "PDF page 2 Citizenship Requirements；page 3 Qualifications",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "fail",
+        "evidence": "官方要求2026年底前取得博士；输入预计2027年6月完成，存在明确时间冲突。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "citizenship",
+        "result": "unknown",
+        "evidence": "公告仅限美国公民；匿名CV没有国籍信息，不能推断。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "Excluded",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2026-12-04",
+    "deadline_verified": true
+  },
+  {
+    "record_id": "F01",
+    "opportunity_type": "fellowship",
+    "title": "JSPS Standard FY2027 Second Recruitment",
+    "institution": "Japan Society for the Promotion of Science",
+    "source_url": "https://www.jsps.go.jp/english/e-fellow/e-ippan/appliguidelines.html",
+    "date_checked": "2026-11-18",
+    "source_locator": "Application Schedule FY2027；About the Program Candidate Eligibility",
+    "evidence_status": "verified",
+    "application_access": "scheduled",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "pass",
+        "evidence": "本快照中的已完成硕士或预计博士时间与该入口允许的学位时点兼容；毕业预测不是已获博士。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "pass",
+        "evidence": "公布的2027年9至11月入境窗口晚于暂定2027年7月最早入职时间。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "citizenship_and_residency",
+        "result": "unknown",
+        "evidence": "需要私下核对国籍与日本永居条件。"
+      },
+      {
+        "criterion": "prior_award",
+        "result": "unknown",
+        "evidence": "尚未确认既往JSPS获资助情况。"
+      },
+      {
+        "criterion": "host_support",
+        "result": "unknown",
+        "evidence": "尚无确认的日本接收导师。"
+      }
+    ],
+    "scores": [
+      4,
+      4,
+      3,
+      5,
+      3,
+      4
+    ],
+    "legacy_run_priority": "B",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "deadline_date": "2027-04-23",
+    "deadline_verified": true
+  },
+  {
+    "record_id": "F02",
+    "opportunity_type": "fellowship",
+    "title": "FAPESP Post Doctoral Fellowship",
+    "institution": "FAPESP with a São Paulo host",
+    "source_url": "https://fapesp.br/en/postdoc",
+    "date_checked": "2026-11-18",
+    "source_locator": "Target audience；4 Application date；6.1 Candidate",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "pass",
+        "evidence": "本快照中的已完成硕士或预计博士时间与该入口允许的学位时点兼容；毕业预测不是已获博士。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "host_support",
+        "result": "unknown",
+        "evidence": "尚无确认的圣保罗州接收导师与项目。"
+      }
+    ],
+    "scores": [
+      4,
+      4,
+      3,
+      4,
+      3,
+      4
+    ],
+    "legacy_run_priority": "B",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "F03",
+    "opportunity_type": "fellowship",
+    "title": "Humboldt Research Fellowship",
+    "institution": "Alexander von Humboldt Foundation",
+    "source_url": "https://www.humboldt-foundation.de/en/apply/sponsorship-programmes/humboldt-research-fellowship",
+    "date_checked": "2026-11-18",
+    "source_locator": "Maximum number of applications received；What is required of you Stay",
+    "evidence_status": "verified",
+    "application_access": "closed",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "residence",
+        "result": "unknown",
+        "evidence": "匿名输入未保留所需德国居留历史；不能据此作符合或不符合判断。"
+      },
+      {
+        "criterion": "nationality",
+        "result": "unknown",
+        "evidence": "未提供国籍资格回答。"
+      }
+    ],
+    "scores": [
+      4,
+      4,
+      2,
+      3,
+      3,
+      4
+    ],
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "F04",
+    "opportunity_type": "fellowship",
+    "title": "KAUST Global Fellowship Call 2027",
+    "institution": "KAUST",
+    "source_url": "https://kgfp.kaust.edu.sa/how-to-apply",
+    "date_checked": "2026-11-18",
+    "source_locator": "Application Guidelines Stage 1 and Stage 2",
+    "evidence_status": "verified",
+    "application_access": "invitation_only",
+    "eligibility_checks": [
+      {
+        "criterion": "degree_timing",
+        "result": "unknown",
+        "evidence": "学位授予与实际入职/轮次时间未全部确认。"
+      },
+      {
+        "criterion": "start_date",
+        "result": "unknown",
+        "evidence": "尚未确认接收团队接受暂定2027年7月后入职；available from不按不可协商处理。"
+      },
+      {
+        "criterion": "language",
+        "result": "unknown",
+        "evidence": "未独立确认所有必需语言条件；保留待核实。"
+      },
+      {
+        "criterion": "user_constraints",
+        "result": "pass",
+        "evidence": "用户明确全球范围、不设地区优先级；没有额外薪酬或合同硬性限制。"
+      },
+      {
+        "criterion": "invitation",
+        "result": "unknown",
+        "evidence": "匿名输入未说明是否通过第一阶段或已获第二阶段邀请。"
+      }
+    ],
+    "scores": null,
+    "legacy_run_priority": "C",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。",
+    "invitation_confirmed": null
+  },
+  {
+    "record_id": "H01",
+    "opportunity_type": "potential_host",
+    "title": "Soil Physics and Land Management",
+    "institution": "Wageningen University and Research",
+    "source_url": "https://www.wur.nl/en/chair-groups/soil-science-cluster/soil-physics-and-land-management",
+    "date_checked": "2026-11-18",
+    "source_locator": "Research themes；Highlighted projects",
+    "evidence_status": "verified",
+    "application_access": "not_applicable",
+    "eligibility_checks": [],
+    "scores": null,
+    "legacy_run_priority": "A research fit",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "H02",
+    "opportunity_type": "potential_host",
+    "title": "Soil and Environmental Physics",
+    "institution": "University of Arizona",
+    "source_url": "https://profiles.arizona.edu/person/mtuller",
+    "date_checked": "2026-11-18",
+    "source_locator": "Biography；Scholarly Contributions",
+    "evidence_status": "verified",
+    "application_access": "not_applicable",
+    "eligibility_checks": [],
+    "scores": null,
+    "legacy_run_priority": "B research fit",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  },
+  {
+    "record_id": "H03",
+    "opportunity_type": "potential_host",
+    "title": "Carbon Water and Soil",
+    "institution": "University of Sydney",
+    "source_url": "https://www.sydney.edu.au/agriculture/our-research/carbon-water-and-soil.html",
+    "date_checked": "2026-11-18",
+    "source_locator": "Carbon water and soil；Get in touch",
+    "evidence_status": "verified",
+    "application_access": "not_applicable",
+    "eligibility_checks": [],
+    "scores": null,
+    "legacy_run_priority": "B research fit",
+    "normalization_note": "人工解释旧快照证据；没有重新联网检索。"
+  }
+]

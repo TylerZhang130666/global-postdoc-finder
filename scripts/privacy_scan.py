@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Flag common personal-data patterns before publication."""
 import argparse, re
+from datetime import date
 from pathlib import Path
-SUFFIXES = {".md", ".txt", ".csv", ".json", ".yaml", ".yml", ".py", ".toml"}
+SUFFIXES = {".md", ".txt", ".csv", ".json", ".yaml", ".yml", ".py", ".toml", ".html", ".xml"}
 PATTERNS = {
     "email": re.compile(r"(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b"),
     "phone-like": re.compile(r"(?<!\w)(?:\+?\d[\d .()\-]{7,}\d)(?!\w)"),
@@ -10,6 +11,16 @@ PATTERNS = {
     "home path": re.compile(r"/(?:home|Users)/[^/\s]+"),
     "ORCID-like ID": re.compile(r"\b\d{4}-\d{4}-\d{4}-[\dX]{4}\b"),
 }
+
+ISO_DATE = re.compile(r"(?<![+\w])\d{4}-\d{2}-\d{2}(?![\d-])")
+
+def phone_scan_text(line: str) -> str:
+    """Avoid reporting valid ISO calendar dates as phone numbers."""
+    def replace_date(match):
+        try: date.fromisoformat(match.group())
+        except ValueError: return match.group()
+        return " " * len(match.group())
+    return ISO_DATE.sub(replace_date, line)
 def scan(root: Path) -> int:
     findings = 0
     for path in sorted(root.rglob("*")):
@@ -19,7 +30,8 @@ def scan(root: Path) -> int:
             print(f"WARN non-UTF-8: {path.relative_to(root)}"); findings += 1; continue
         for number, line in enumerate(lines, 1):
             for label, pattern in PATTERNS.items():
-                if pattern.search(line): print(f"{path.relative_to(root)}:{number}: {label}"); findings += 1
+                searchable = phone_scan_text(line) if label == "phone-like" else line
+                if pattern.search(searchable): print(f"{path.relative_to(root)}:{number}: {label}"); findings += 1
     print(f"Found {findings} potential issue(s)." if findings else "No common patterns found; review manually.")
     return 1 if findings else 0
 if __name__ == "__main__":
