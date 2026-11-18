@@ -20,10 +20,10 @@
 ```sh
 python scripts/build_web_catalog.py
 node --test web/tests/core.test.mjs
-python -m http.server 8769 --bind 127.0.0.1 --directory web
+python -m http.server 8769 --bind localhost --directory web
 ```
 
-打开 http://127.0.0.1:8769 。请通过 HTTP(S) 预览，直接双击 HTML 会受模块与数据加载限制。
+打开 http://localhost:8769 。请通过 HTTP(S) 预览，直接双击 HTML 会受模块与数据加载限制。
 
 ## 维护与部署
 
