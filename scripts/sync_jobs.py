@@ -304,7 +304,21 @@ def jobsuk(doc, source):
                         location=location,posted_at=parse_date(body),summary=excerpt(body.replace(link.text(),'').replace(employer,''),140)))
     return rows,recognized
 
+def jobrxiv(doc,source):
+    rows=[];recognized=0
+    countries={'United States (US)':'美国','United Kingdom (UK)':'英国','Germany':'德国','China':'中国','Canada':'加拿大','Australia':'澳大利亚','Netherlands':'荷兰','Switzerland':'瑞士','France':'法国','Japan':'日本','Sweden':'瑞典','Denmark':'丹麦','New Zealand':'新西兰','Singapore':'新加坡','Austria':'奥地利','Belgium':'比利时','Spain':'西班牙','Poland':'波兰','Italy':'意大利','Finland':'芬兰','Norway':'挪威','Hong Kong':'中国香港','Taiwan':'中国台湾','South Korea':'韩国','Ireland':'爱尔兰','Israel':'以色列','Brazil':'巴西','South Africa':'南非','Italy':'意大利','Norway':'挪威','Finland':'芬兰','Ireland':'爱尔兰','South Korea':'韩国','Hong Kong':'中国香港','Taiwan':'中国台湾'}
+    for card in doc.all('li','job_listing'):
+        link=card.first('a');heading=card.first('h4')
+        if not link.attrs.get('href') or not heading.text():continue
+        recognized+=1
+        title=' '.join(c for c in heading.children if isinstance(c,str)).strip()
+        if not POSTDOC.search(title):continue
+        location=card.first('span','ws-meta-job-location').text()
+        rows.append(job(title,link.attrs['href'],source,institution=card.first('span','ws-meta-company-name').text() or source['name'],country=countries.get(location,'未注明'),location=location,posted_at=card.first('time').attrs.get('datetime',''),summary=excerpt(card.first('div','listing-desc').text())))
+    return rows,recognized
+
 SOURCES = [
+    dict(id='jobrxiv',name='jobRxiv',country='未注明',url='https://jobrxiv.org/job-category/postdoc/',pages=40,parser=jobrxiv,detail_budget=50,scope='公开博后分类，近180天发布记录；未核实当前招聘状态'),
     dict(id='academictransfer', name='AcademicTransfer', country='荷兰', url='https://www.academictransfer.com/en/jobs/?q=postdoc', pages=1, parser=academictransfer, detail_budget=10, scope='首屏10条；其余动态分页API禁止采集，未覆盖全部结果'),
     dict(id='hku', name='The University of Hong Kong', country='中国香港', url='https://jobs.hku.hk/en/search/?category=Senior+Research+Staff+%26+Post-doctoral+Fellow', pages=5, parser=hku, detail_budget=15, scope='博后类目，最多五页；仅保留博后标题'),
     dict(id='csiro', name='CSIRO', country='澳大利亚', url='https://jobs.csiro.au/search/?q=postdoctoral', pages=2, parser=csiro, detail_budget=10, scope='关键词 postdoctoral，最多两页'),
@@ -335,7 +349,7 @@ class Client:
         self.robot.parse(robots.lstrip('\ufeff').splitlines())
         self.delay = max(1.0, self.robot.crawl_delay('PostdocFinder') or self.robot.crawl_delay('*') or 1)
 
-    def raw(self, url):
+    def raw(self, url, data=None):
         if urlsplit(url).scheme != 'https' or urlsplit(url).hostname != self.host:
             raise ValueError('Only same-host HTTPS requests are allowed')
         time.sleep(max(0, self.last + self.delay - time.monotonic()))
@@ -343,7 +357,7 @@ class Client:
         headers={'User-Agent': USER_AGENT, 'Accept': 'text/html,text/plain'}
         if self.host=='www.mpg.de' and re.fullmatch(r'/jobboard/\d+/more_items',urlsplit(url).path):
             headers['X-Requested-With']='XMLHttpRequest'
-        with urlopen(Request(url, headers=headers), timeout=25) as r:
+        with urlopen(Request(url, data=data, headers=headers), timeout=25) as r:
             if urlsplit(r.url).hostname != self.host:
                 raise ValueError('Unexpected cross-host redirect')
             return r.read(5_000_000).decode('utf-8', errors='replace')
@@ -352,6 +366,10 @@ class Client:
         if not self.robot.can_fetch('PostdocFinder', url):
             raise ValueError('Source robots.txt excludes this URL')
         return self.raw(url)
+
+    def search_post(self,url,fields):
+        if not self.robot.can_fetch('PostdocFinder',url):raise ValueError('Source robots.txt excludes this URL')
+        return self.raw(url,urlencode(fields).encode())
 
 def next_page(doc, url, host):
     if host=='www.mpg.de':
@@ -387,6 +405,25 @@ def collect(source, now):
     rows, recognized = [], 0
     try:
         client = Client(source)
+        if source['id']=='jobrxiv':
+            # Public load-more request observed in the site's own frontend.
+            # Date ordering permits a bounded recent window without crawling
+            # years of old adverts or treating all archived records as open.
+            cutoff=(datetime.fromisoformat(now)-timedelta(days=180)).date().isoformat()
+            for page in range(1,source['pages']+1):
+                payload=json.loads(client.search_post('https://jobrxiv.org/jm-ajax/get_listings/',{'search_categories[]':'postdoc','per_page':25,'page':page,'orderby':'date','order':'DESC','show_pagination':'false','search_keywords':'','search_location':''}))
+                if not isinstance(payload.get('html'),str) or not isinstance(payload.get('max_num_pages'),(int,float)):raise ValueError('Unrecognized public jobRxiv search response')
+                doc=Document(payload['html']).root;found,count=source['parser'](doc,source)
+                if not count and payload.get('found_jobs'):raise ValueError('Unrecognized jobRxiv cards')
+                state['pages_read']+=1;recognized+=count
+                rows.extend(r for r in found if r.get('posted_at','')>=cutoff)
+                dates=[n.attrs.get('datetime','') for n in doc.all('time') if n.attrs.get('datetime')]
+                reached_window=bool(dates) and max(dates)<cutoff
+                if reached_window or page>=payload['max_num_pages']:
+                    state.update(status='ok',count=len({r['id'] for r in rows}),observed_at=now,coverage='recent_window' if reached_window else 'end_of_list',listing_entries=recognized)
+                    return rows,state
+            state.update(status='ok',count=len({r['id'] for r in rows}),observed_at=now,coverage='page_limit',listing_entries=recognized)
+            return rows,state
         url, visited = source['url'], set()
         for _ in range(source['pages']):
             if not url or url in visited:
@@ -464,6 +501,8 @@ def main():
     temp = args.out.with_suffix('.tmp')
     temp.write_text(json.dumps(data, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
     temp.replace(args.out)
+    from build_hosts import write as write_hosts
+    write_hosts(data['jobs'],now,args.out.parent/'hosts.json')
     print(f'{len(data["jobs"])} indexed jobs')
 
 if __name__ == '__main__':

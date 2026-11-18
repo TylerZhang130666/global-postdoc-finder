@@ -4,8 +4,8 @@ from test_notice_index import M,S,NOW,BODY
 
 class FulltextSources(unittest.TestCase):
     def test_every_source_has_a_bounded_body_budget(self):
-        self.assertEqual(len(S.SOURCES),13)
-        self.assertTrue(all(0<s.get('detail_budget',0)<=40 for s in S.SOURCES))
+        self.assertGreaterEqual(len(S.SOURCES),14)
+        self.assertTrue(all(0<s.get('detail_budget',0)<=50 for s in S.SOURCES))
 
     def test_source_specific_bodies_include_requirements_and_exclude_navigation(self):
         containers={
@@ -15,7 +15,7 @@ class FulltextSources(unittest.TestCase):
             'leibniz':('div','class="tx_jobfair"'),'mpg':('main','class="content"'),
             'eth':('section','class="description"'),'copenhagen':('div','class="vacancy_details_area"'),
             'kth':('div','class="job-details-content"'),'ubc':('article','class="node--type-job-posting"'),
-            'jrec':('div','class="card_body"'),'jobsuk':('div','id="job-description"')}
+            'jrec':('div','class="card_body"'),'jobsuk':('div','id="job-description"'),'jobrxiv':('div','class="job_description"')}
         for sid,(tag,attrs) in containers.items():
             with self.subTest(source=sid):
                 title='Postdoctoral Researcher in Biology'
@@ -92,5 +92,5 @@ class FulltextSources(unittest.TestCase):
         self.assertIn('offset=10',following)
 
     def test_missing_body_and_failed_body_are_distinct_in_coverage(self):
-        stats=M.body_coverage([{}, {'detail_status':'unavailable'}, {'detail_status':'indexed','detail_index_version':2}])
+        stats=M.body_coverage([{}, {'detail_status':'unavailable'}, {'detail_status':'indexed','detail_index_version':M.INDEX_VERSION}])
         self.assertEqual((stats['body_indexed'],stats['body_pending'],stats['body_unavailable']),(1,1,1))

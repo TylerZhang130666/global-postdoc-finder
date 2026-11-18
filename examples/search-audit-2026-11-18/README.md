@@ -65,11 +65,12 @@
 
 ## 复核
 
-基线：提交 `f7feee4ee92193e342fd59029c137fdfe8e6f1b4` 的 `web/data/jobs.json`（生成时间 2026-11-18T12:23:00+00:00）。当前快照：本目录同提交的 `web/data/jobs.json`。原始网页正文留在本地，不提交联系人或全文。
+基线：提交 `f7feee4ee92193e342fd59029c137fdfe8e6f1b4` 的 `web/data/jobs.json`（生成时间 2026-11-18T12:23:00+00:00）。对比快照：提交 `9ee37d414909c30cf80180ce28588273eee5a774` 的 `web/data/jobs.json`；后续版本已扩充，不能直接代替本次固定快照。原始网页正文留在本地，不提交联系人或全文。
 
 ```sh
 git show f7feee4ee92193e342fd59029c137fdfe8e6f1b4:web/data/jobs.json > baseline.json
-node scripts/audit_fulltext.mjs baseline.json web/data/jobs.json examples/search-audit-2026-11-18/queries.json comparison.json
+git show 9ee37d414909c30cf80180ce28588273eee5a774:web/data/jobs.json > current.json
+node scripts/audit_fulltext.mjs baseline.json current.json examples/search-audit-2026-11-18/queries.json comparison.json
 ```
 
 逐条新增命中的公告 ID 和覆盖数量见 [comparison.json](comparison.json)，可对应岗位库中的原始 URL。

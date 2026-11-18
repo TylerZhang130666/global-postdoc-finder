@@ -9,6 +9,11 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PhoneDateTests(unittest.TestCase):
+    def test_salary_ranges_dates_and_public_jobrxiv_ids_are_not_phones(self):
+        samples=['"salary": "EUR '+'3800'+'-'+'4000'+' per month"','Checked '+'01'+'-'+'02'+'-'+'2027', 'https://jobrxiv.org/job/example-'+'27778'+'-'+'2027/']
+        for sample in samples:self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(sample)))
+        phone='+'+'1 202 '+'555 0123'
+        self.assertIsNotNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(samples[0]+' '+phone)))
     def test_json_title_cohort_years_do_not_mask_adjacent_phone(self):
         title='"title": "Postdoctoral positions '+' - '.join(('2026','2027'))+'"'
         self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(title)))

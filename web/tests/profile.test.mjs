@@ -1,0 +1,46 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,containsFeature} from '../profile.mjs';
+import {readCV} from '../cv-reader.mjs';
+
+test('CV feature extraction recognizes Chinese and English without retaining CV text',()=>{
+  const text='Synthetic Person. '+['private','example.org'].join('@')+' 土壤有机碳、冻融；remote-sensing, GIS, Python and R. Publications in soil ecology.';
+  const p=inferProfile(text);
+  assert.ok(p.topics.includes('soil carbon'));assert.ok(p.topics.includes('freeze thaw'));
+  assert.ok(p.methods.includes('remote sensing'));assert.ok(p.methods.includes('GIS'));assert.ok(p.methods.includes('R'));
+  assert.ok(!JSON.stringify(p).includes('Synthetic'));assert.ok(!JSON.stringify(p).includes('private'));
+});
+test('technical words respect boundaries rather than matching names or logistics',()=>{
+  assert.equal(containsFeature('logistics service','GIS'),false);
+  assert.equal(containsFeature('GIS mapping','GIS'),true);
+  assert.equal(containsFeature('pythonic language','Python'),false);
+});
+test('confirmed profile drops unrelated CV properties and normalizes countries',()=>{
+  const p=normalizeProfile({topics:'soil，carbon',methods:'GIS, Python',regions:'Germany，Netherlands',full_cv:'PRIVATE CV',name:'Synthetic Person'});
+  assert.deepEqual(p.regions,['德国','荷兰']);assert.ok(!JSON.stringify(p).includes('PRIVATE'));assert.ok(!Object.hasOwn(p,'name'));
+  assert.throws(()=>normalizeProfile({topics:['x'],start_date:'2026-02-31'}));
+  assert.throws(()=>normalizeProfile({topics:['private'+'@'+'example.org']}));
+});
+test('matching respects regions and reports evidence words without eligibility claims',()=>{
+  const p=normalizeProfile({topics:'soil',methods:'GIS',regions:'德国'});
+  const result=profileMatch({title:'Postdoc in soil science',country:'荷兰',search_terms:['gis']},p);
+  assert.deepEqual(result.matched,['soil','GIS']);assert.equal(result.regionOK,false);
+  assert.ok(!Object.hasOwn(result,'eligible'));assert.ok(!Object.hasOwn(result,'probability'));
+});
+test('LinkedIn integration creates ordinary search links, not account access',()=>{
+  for(const kind of ['jobs','people','posts']){
+    const u=new URL(linkedinSearch(kind,{keywords:'soil carbon',location:'Germany'}));
+    assert.equal(u.hostname,'www.linkedin.com');assert.ok(u.searchParams.get('keywords').includes('soil carbon'));
+    assert.ok(!u.searchParams.has('access_token'));
+  }
+  assert.throws(()=>linkedinSearch('invalid',{keywords:'soil'}));
+  assert.throws(()=>linkedinSearch('jobs',{keywords:'private'+'@'+'example.org'}));
+  assert.equal(linkedinSearch('jobs'), '');
+});
+test('CV reader accepts text and rejects unsupported, oversized or empty files',async()=>{
+  const value='Synthetic research profile in soil ecology and remote sensing.';
+  assert.equal(await readCV({name:'sample.txt',size:value.length,text:async()=>value}),value);
+  await assert.rejects(readCV({name:'sample.exe',size:50}));
+  await assert.rejects(readCV({name:'sample.pdf',size:6*1024*1024}));
+  await assert.rejects(readCV({name:'sample.txt',size:0,text:async()=>''}));
+});

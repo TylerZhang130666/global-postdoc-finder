@@ -12,6 +12,24 @@ class ExpandedSources(unittest.TestCase):
     def source(self,name):
         return next(s for s in M.SOURCES if s['id']==name)
 
+    def test_jobrxiv_drops_badges_and_keeps_real_country(self):
+        html='<li class="job_listing"><a href="https://jobrxiv.org/job/example/"><h4>Postdoctoral Researcher <span>Full-time</span></h4><span class="ws-meta-company-name">Example University</span><span class="ws-meta-job-location">Germany</span><time datetime="2026-11-18"></time><div class="listing-desc">Soil science research.</div></a></li>'
+        rows,count=M.jobrxiv(M.Document(html).root,self.source('jobrxiv'))
+        self.assertEqual(count,1);self.assertEqual(rows[0]['title'],'Postdoctoral Researcher');self.assertEqual(rows[0]['country'],'德国')
+
+    def test_jobrxiv_date_order_stops_at_recent_window(self):
+        calls=[]
+        class Client:
+            def __init__(self,source):pass
+            def search_post(self,url,fields):
+                calls.append(fields)
+                date='2026-11-01' if fields['page']==1 else '2025-01-01'
+                html='<li class="job_listing"><a href="https://jobrxiv.org/job/example-'+str(fields['page'])+'/"><h4>Postdoctoral Researcher</h4><time datetime="'+date+'"></time></a></li>'
+                import json
+                return json.dumps({'html':html,'found_jobs':True,'max_num_pages':31})
+        with patch.object(M,'Client',Client):rows,state=M.collect(self.source('jobrxiv'),'2026-11-18T00:00:00+00:00')
+        self.assertEqual(len(rows),1);self.assertEqual(state['coverage'],'recent_window');self.assertEqual(len(calls),2);self.assertEqual(calls[0]['orderby'],'date')
+
     def test_robots_not_found_allows_access_but_server_error_does_not(self):
         with patch.object(M.Client,'raw',side_effect=HTTPError('https://example.org/robots.txt',404,'missing',None,None)):
             client=M.Client({'url':'https://example.org/jobs/'})

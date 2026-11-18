@@ -13,7 +13,7 @@ PATTERNS = {
 }
 
 ISO_DATE = re.compile(r"(?<![+\w])\d{4}-\d{2}-\d{2}(?![\d-])")
-PUBLIC_JOB_URL = re.compile(r'https://(?:postdocs\.yale\.edu/posts/|jobs\.csiro\.au/job/)[^\s<>"\'?]+')
+PUBLIC_JOB_URL = re.compile(r'https://(?:postdocs\.yale\.edu/posts/|jobs\.csiro\.au/job/|jobrxiv\.org/job/)[^\s<>"\'?]+')
 SVG_VIEWBOX = re.compile(r'viewBox="[\d.\s-]+"', re.I)
 
 def phone_scan_text(line: str) -> str:
@@ -26,12 +26,21 @@ def phone_scan_text(line: str) -> str:
     # credentials, other hosts or phone/email text outside the URL.
     line = PUBLIC_JOB_URL.sub(lambda m: ' ' * len(m.group()), line)
     line = SVG_VIEWBOX.sub(lambda m: ' ' * len(m.group()), line)
-    if re.match(r'^\s*"title"\s*:',line):
+    if re.match(r'^\s*"(?:title|summary|excerpt|contract)"\s*:',line):
         # Recruitment cohort years in a JSON title are not a telephone number.
         def cohort(match):
             start,end=map(int,match.groups())
             return ' '*len(match.group()) if 1900<=start<=end<=2100 and end-start<=4 else match.group()
-        line=re.sub(r'\b((?:19|20)\d{2})\s+-\s+((?:19|20)\d{2})\b',cohort,line)
+        line=re.sub(r'\b((?:19|20)\d{2})\s*[-–]\s*((?:19|20)\d{2})\b',cohort,line)
+    if re.match(r'^\s*"salary"\s*:',line) and re.search(r'[$€£]|\b(?:EUR|USD|GBP|CHF|HKD|CAD|AUD)\b',line):
+        line=re.sub(r'\b\d{4,7}\s*[-–]\s*\d{4,7}\b',lambda m:' '*len(m.group()),line)
+    def other_date(match):
+        from datetime import datetime
+        for fmt in ('%d-%m-%Y','%d.%m.%Y','%d/%m/%Y','%m.%d.%Y'):
+            try:datetime.strptime(match.group(),fmt);return ' '*len(match.group())
+            except ValueError:pass
+        return match.group()
+    line=re.sub(r'(?<![+\w])\d{2}[-./]\d{2}[-./]\d{4}(?![\d-])',other_date,line)
     return ISO_DATE.sub(replace_date, line)
 def scan(root: Path) -> int:
     findings = 0

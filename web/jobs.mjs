@@ -1,4 +1,5 @@
 import {safeURL,today} from './core.mjs';
+import {profileMatch} from './profile.mjs';
 
 const TOPICS = {
   土壤:['soil'], 碳:['carbon'], 生态:['ecology','ecological'], 遥感:['remote sensing','hyperspectral','satellite'],
@@ -32,7 +33,7 @@ const date=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLo
 const timestamp=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'未记录';
 const external=(label,url,cls)=>{const a=el('a',label,cls);a.href=safeURL(url);a.target='_blank';a.rel='noopener noreferrer';return a;};
 
-export async function initJobs({onSave,isSaved}){
+export async function initJobs({onSave,isSaved,getProfile=()=>null,onData=()=>{}}){
   let data={jobs:[],sources:[]},filtered=[],page=1,selected=null;
   const PAGE_SIZE=15;
   function saveButton(job){const saved=isSaved(job.url),b=el('button',saved?'已收藏':'收藏',saved?'save-job saved':'save-job');b.type='button';b.setAttribute('aria-label',`${saved?'已收藏':'收藏'}：${job.title}`);b.disabled=saved;b.addEventListener('click',()=>{onSave(job);render();});return b;}
@@ -42,9 +43,17 @@ export async function initJobs({onSave,isSaved}){
     if(job.department)block.append(el('p',job.department,'muted'));
     const actions=el('div','','detail-actions');actions.append(external('查看原公告 ↗',job.url,'primary'),saveButton(job));block.append(actions);
     const facts=el('dl','','job-facts');
-    for(const [label,value] of [['截止',date(job.deadline_at)||'未注明'],['发布',date(job.posted_at)||'未注明'],['来源',job.source_name],['收录',date(job.last_seen)]]){facts.append(el('dt',label),el('dd',value));}
+    for(const [label,value] of [['截止',date(job.deadline_at)||'未注明'],['发布',date(job.posted_at)||'未注明'],['导师',job.notice_details?.faculty],['来源',job.source_name],['收录',date(job.last_seen)]]){if(value)facts.append(el('dt',label),el('dd',value));}
     block.append(facts);
-    if(job.summary){block.append(el('h3','岗位摘要'),el('p',job.summary,'job-excerpt'));}
+    const info=job.notice_details??{};
+    if(info.faculty)block.append(el('p','导师：'+info.faculty,'muted'));
+    if(info.excerpt||job.summary){block.append(el('h3','研究内容 · 公告摘录'),el('p',info.excerpt||job.summary,'job-excerpt'));}
+    for(const [label,value] of [['要求摘录',info.requirements],['申请材料 / 方式',info.application]]){
+      if(value?.length){block.append(el('h3',label));const list=el('ul','','notice-extracts');for(const line of value)list.append(el('li',line));block.append(list);}
+    }
+    for(const [label,value] of [['薪酬原文',info.salary],['合同相关原文',info.contract]])if(value)block.append(el('h3',label),el('p',value,'job-excerpt'));
+    if(getProfile()){const match=profileMatch(job,getProfile());if(match.matched.length)block.append(el('p','与你的共同词：'+match.matched.join('、'),'match-reason'));}
+    if(!info.salary||!info.contract)block.append(el('p',[!info.salary?'薪酬未提取':null,!info.contract?'合同期限未提取':null].filter(Boolean).join(' · '),'muted'));
     if(job.detail_status==='indexed')block.append(el('p','正文已索引 · '+date(job.detail_checked_at)+(job.detail_refresh_failed?' · 本轮更新失败，保留上次索引':''),'muted'));
     else block.append(el('p',job.detail_status==='unavailable'?'正文暂不可读，仅检索标题和摘要':'正文待索引，当前检索标题和摘要','muted'));
     if(job.stale)block.append(el('p','该来源本轮未完整更新，以上是上次记录。','stale-note'));
@@ -53,7 +62,11 @@ export async function initJobs({onSave,isSaved}){
   }
   function showDetail(job,openMobile=false){selected=job;$('job-detail').replaceChildren(detail(job));for(const card of document.querySelectorAll('.job-card'))card.classList.toggle('selected',card.dataset.id===job.id);if(openMobile&&matchMedia('(max-width: 760px)').matches){$('mobile-detail').replaceChildren(detail(job));$('job-dialog').showModal();}}
   function render(){
+    const profile=getProfile();
+    $('profile-sort-option').disabled=!profile;
+    if(!profile&&$('job-sort').value==='profile')$('job-sort').value='recent';
     filtered=searchJobs(data.jobs,{query:$('keywords').value,country:$('region').value,source:$('source-filter').value,sort:$('job-sort').value,hideExpired:$('hide-expired').checked});
+    if($('job-sort').value==='profile'&&profile)filtered=filtered.map(job=>({job,match:profileMatch(job,profile)})).filter(x=>x.match.regionOK&&x.match.rank>0).sort((a,b)=>b.match.rank-a.match.rank).map(x=>x.job);
     const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));page=Math.min(page,pages);
     $('results-count').textContent=`${filtered.length} 个岗位`;$('job-results').replaceChildren();
     $('job-detail').hidden=!filtered.length;
@@ -76,6 +89,7 @@ export async function initJobs({onSave,isSaved}){
       const main=el('button','','job-select');main.type='button';main.append(el('p',job.institution,'job-employer'),el('h2',job.title),el('p',[job.country,job.department||job.location].filter(Boolean).join(' · '),'job-location'));
       main.addEventListener('click',()=>showDetail(job,true));card.append(main);
       if($('keywords').value.trim()&&!matchesJob(job,$('keywords').value,false))card.append(el('p','匹配公告正文','body-match'));
+      if($('job-sort').value==='profile'&&profile)card.append(el('p','共同词：'+profileMatch(job,profile).matched.join('、'),'match-reason'));
       const bottom=el('div','','job-card-bottom');bottom.append(el('span',job.deadline_at?'截止 '+date(job.deadline_at):'截止未注明'),saveButton(job));card.append(bottom);if(job.stale)card.append(el('small','上次记录','stale-note'));$('job-results').append(card);
     }
     const visible=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);showDetail(visible.find(j=>j.id===selected?.id)??visible[0]);
@@ -96,7 +110,7 @@ export async function initJobs({onSave,isSaved}){
     try{
       const response=await fetch('./data/jobs.json?refresh='+Date.now(),{cache:'no-store'});if(!response.ok)throw new Error();
       const next=await response.json();if(!Array.isArray(next.jobs)||!Array.isArray(next.sources)||next.schema_version!=='postdoc-jobs/1')throw new Error();
-      const changed=next.generated_at!==data.generated_at;data=next;
+      const changed=next.generated_at!==data.generated_at;data=next;onData(data);
       options('region',[...new Set(data.jobs.map(j=>j.country))].sort().map(v=>[v,v]),'全部地区');
       options('source-filter',data.sources.map(s=>[s.id,s.name]),'全部来源');
       const observed=data.jobs.map(j=>j.last_seen).filter(Boolean).sort().at(-1);

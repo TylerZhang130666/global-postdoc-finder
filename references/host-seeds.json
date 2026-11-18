@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Johannes Lehmann",
+    "institution": "Cornell University",
+    "country": "美国",
+    "url": "https://cals.cornell.edu/people/johannes-lehmann",
+    "research_excerpt": "土壤生物地球化学、有机质、生物炭与土壤碳固存。",
+    "topics": [
+      "soil",
+      "soil carbon",
+      "biogeochemistry",
+      "agriculture"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Katie Field",
+    "institution": "University of Sheffield",
+    "country": "英国",
+    "url": "https://sheffield.ac.uk/biosciences/people/academic-staff/katie-field",
+    "research_excerpt": "植物—土壤过程、菌根共生与养分交换。",
+    "topics": [
+      "plant",
+      "soil",
+      "ecology",
+      "microbiology"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Jan-Willem van Groenigen",
+    "institution": "Wageningen University & Research",
+    "country": "荷兰",
+    "url": "https://www.wur.nl/en/chair-groups/soil-science-cluster/soil-biology",
+    "research_excerpt": "土壤生物及其在农业生态系统和气候变化中的作用。",
+    "topics": [
+      "soil",
+      "ecology",
+      "agriculture",
+      "climate"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Thomas Keller",
+    "institution": "Swedish University of Agricultural Sciences",
+    "country": "瑞典",
+    "url": "https://www.slu.se/en/profilepages/k/thomas-keller/",
+    "research_excerpt": "土壤力学与土壤管理；相关研究见院系土壤压实介绍。",
+    "topics": [
+      "soil",
+      "soil compaction",
+      "agriculture"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Matthias Rillig",
+    "institution": "Freie Universität Berlin",
+    "country": "德国",
+    "url": "https://rilliglab.org/",
+    "research_excerpt": "土壤生态与全球变化生物学，包括真菌、土壤生物多样性和生态综合分析。",
+    "topics": [
+      "soil",
+      "ecology",
+      "biodiversity",
+      "microbiology",
+      "meta analysis"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Johan Six",
+    "institution": "ETH Zürich",
+    "country": "瑞士",
+    "url": "https://worldfoodsystem.ethz.ch/people/members.html",
+    "research_excerpt": "机构成员目录列为 Sustainable Agroecosystems；具体研究与合作条件需查看课题组。",
+    "topics": [
+      "agriculture"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Alexander McBratney",
+    "institution": "University of Sydney",
+    "country": "澳大利亚",
+    "url": "https://dsi.sydney.edu.au/wps-members/professor-alexander-mcbratney/",
+    "research_excerpt": "土壤科学与精准农业，数字科学领域的土壤研究。",
+    "topics": [
+      "soil",
+      "agriculture"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Louis Schipper",
+    "institution": "University of Waikato",
+    "country": "新西兰",
+    "url": "https://www.waikato.ac.nz/research/institutes-centres-entities/institutes/eri/themes/environmental-systems/",
+    "research_excerpt": "土壤碳、泥炭地与环境系统研究；页面列有相关项目团队。",
+    "topics": [
+      "soil",
+      "soil carbon",
+      "biogeochemistry"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Taku Nishimura",
+    "institution": "The University of Tokyo",
+    "country": "日本",
+    "url": "https://www.a.u-tokyo.ac.jp/english/researchers_e/profile_e/?id=prof-nishimura_taku",
+    "research_excerpt": "土壤物理与土壤水文学实验室。",
+    "topics": [
+      "soil",
+      "hydrology"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "Suzanne Simard",
+    "institution": "University of British Columbia",
+    "country": "加拿大",
+    "url": "https://www.grad.ubc.ca/researcher/15445-simard",
+    "research_excerpt": "森林生态、土壤与真菌网络；官网列有相关研究与指导论文。",
+    "topics": [
+      "soil",
+      "forestry",
+      "ecology",
+      "microbiology"
+    ],
+    "checked_at": "2026-11-18"
+  },
+  {
+    "name": "沈其荣",
+    "institution": "南京农业大学",
+    "country": "中国",
+    "url": "https://faculty.njau.edu.cn/shenqirong/en/kyxm/63631/content/88325.htm",
+    "research_excerpt": "教师官网列有“土壤环境健康与地力培育机制”研究项目。",
+    "topics": [
+      "soil",
+      "agriculture"
+    ],
+    "checked_at": "2026-11-18"
+  }
+]

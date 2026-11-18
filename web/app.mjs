@@ -1,7 +1,8 @@
 import {TYPES,PROGRESS,CRITERIA,RESULTS,ACCESS,today,safeURL,normalizeRecord,parseImport,mergeRecords,toCSV,matchSource,deadlineLabel} from './core.mjs';
-import {initJobs} from './jobs.mjs?v=5';
+import {initJobs} from './jobs.mjs?v=6';
+import {initCareer} from './career.mjs?v=6';
 const $=id=>document.getElementById(id), KEY='global-postdoc-finder:workbench:v1';
-let records=[],sources=[],editing=null,editingSnapshot=null,rawStorage=null,storageBlocked=false,timer,jobUI;
+let records=[],sources=[],editing=null,editingSnapshot=null,rawStorage=null,storageBlocked=false,timer,jobUI,careerUI;
 const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;};
 function anchor(label,url,cls){const a=text('a',label,cls);a.href=safeURL(url);a.target='_blank';a.rel='noopener noreferrer';return a;}
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(timer);timer=setTimeout(()=>$('toast').hidden=true,5500);}
@@ -10,10 +11,10 @@ try{rawStorage=localStorage.getItem(KEY);if(rawStorage){const data=JSON.parse(ra
 catch{storageBlocked=true;storageError('浏览器无法读取已保存的数据。为保护原文件，暂不覆盖；请先下载原始数据备份，或尝试恢复浏览器的存储权限。');}
 function persist(next){
   if(storageBlocked){toast('本机存储读取异常，请先下载原始数据备份。');return false;}
-  try{localStorage.setItem(KEY,JSON.stringify({schema_version:'postdoc-workbench/1',records:next}));records=next;jobUI?.refresh();return true;}
+  try{localStorage.setItem(KEY,JSON.stringify({schema_version:'postdoc-workbench/1',records:next}));records=next;jobUI?.refresh();careerUI?.refresh();return true;}
   catch{storageError('本机存储不可用或空间不足，本次修改尚未保存。可先导出已有清单备份，再检查浏览器存储权限。');toast('保存失败，表单内容已保留。');return false;}
 }
-function tab(name,focus=false){for(const panel of ['search','verify','list'])$(panel+'-panel').hidden=panel!==name;for(const b of document.querySelectorAll('[data-tab]')){const active=b.dataset.tab===name;b.setAttribute('aria-selected',String(active));b.tabIndex=active||name==='verify'?0:-1;if(active&&focus)b.focus();}if(name==='list')renderRecords();}
+function tab(name,focus=false){for(const panel of ['search','hosts','profile','verify','list'])$(panel+'-panel').hidden=panel!==name;for(const b of document.querySelectorAll('[data-tab]')){const active=b.dataset.tab===name;b.setAttribute('aria-selected',String(active));b.tabIndex=active||name==='verify'?0:-1;if(active&&focus)b.focus();}if(name==='list')renderRecords();}
 document.querySelector('.tabs').setAttribute('role','tablist');
 for(const b of document.querySelectorAll('[data-tab]')){b.addEventListener('click',()=>tab(b.dataset.tab));b.addEventListener('keydown',e=>{const tabs=[...document.querySelectorAll('[data-tab]')];let i=tabs.indexOf(b);if(e.key==='ArrowRight')i=(i+1)%tabs.length;else if(e.key==='ArrowLeft')i=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')i=0;else if(e.key==='End')i=tabs.length-1;else return;e.preventDefault();tab(tabs[i].dataset.tab,true);});}
 for(const [key,label] of Object.entries(CRITERIA)){const l=text('label',label),select=document.createElement('select');select.id='check-'+key;select.setAttribute('aria-label',label);for(const [v,t] of Object.entries(RESULTS)){const o=text('option',t);o.value=v;select.append(o);}l.append(select);$('check-fields').append(l);}
@@ -51,10 +52,23 @@ $('import-file').addEventListener('change',async e=>{const file=e.target.files[0
 window.addEventListener('storage',e=>{if(e.key!==KEY)return;try{records=e.newValue?parseImport(e.newValue):[];renderRecords();toast('已同步本浏览器另一个标签页的清单；当前表单未保存的内容已保留。');}catch{storageBlocked=true;rawStorage=e.newValue;storageError('另一个标签页写入的数据无法读取。请先下载原始数据备份。');}});
 renderRecords();tab('search');
 fetch('./data/sources.json').then(r=>r.ok?r.json():null).then(data=>{sources=data?.sources??[];}).catch(()=>{});
+careerUI=initCareer({
+  isSaved:url=>records.some(r=>r.source_url===url&&r.opportunity_type==='potential_host'),
+  onProfile:()=>jobUI?.refresh(),
+  goToJobs:()=>{tab('search');$('keywords').value='';$('region').value='all';$('source-filter').value='all';$('job-sort').value='profile';jobUI?.refresh();},
+  onSaveHost:host=>{
+    if(records.some(r=>r.source_url===host.url&&r.opportunity_type==='potential_host'))return;
+    if(records.length>=1000){toast('收藏已满，请先导出整理。');return;}
+    const record=normalizeRecord({title:host.name,institution:host.institution,country:host.country,source_url:host.url,opportunity_type:'potential_host',application_access:'not_applicable',evidence:host.research_excerpt+'\n研究资料读取：'+host.checked_at+'\n招聘状态未独立核实'});
+    if(persist([record,...records])){renderRecords();toast('已收藏团队');}
+  }
+});
 jobUI=await initJobs({
-  isSaved:url=>records.some(r=>r.source_url===url),
+  getProfile:()=>careerUI.getProfile(),
+  onData:data=>careerUI.setData(data),
+  isSaved:url=>records.some(r=>r.source_url===url&&r.opportunity_type==='advertised_job'),
   onSave:job=>{
-    if(records.some(r=>r.source_url===job.url))return;
+    if(records.some(r=>r.source_url===job.url&&r.opportunity_type==='advertised_job'))return;
     if(records.length>=1000){toast('收藏已满，请先导出整理。');return;}
     const record=normalizeRecord({title:job.title,institution:job.institution,country:job.country,source_url:job.url,opportunity_type:'advertised_job',deadline:job.deadline_at?.slice(0,10)||'',evidence:`来源：${job.source_name}\n列表收录：${job.last_seen}\n${job.department??''}\n${job.summary??''}`.trim()});
     if(persist([record,...records])){renderRecords();toast('已收藏');}

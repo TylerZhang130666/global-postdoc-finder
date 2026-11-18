@@ -5,7 +5,7 @@ import json
 import re
 import unicodedata
 
-INDEX_VERSION = 2
+INDEX_VERSION = 3
 PHRASES = ('machine learning','remote sensing','soil carbon','soil organic carbon','artificial intelligence','deep learning','data science','climate change','soil science','soil ecology','freeze thaw')
 SKIP_TAGS = {'script','style','template','nav','header','footer','aside','form','dialog','button'}
 
@@ -64,6 +64,10 @@ def notice_body(doc,record,Document):
     headings=[n for n in doc.all() if n.tag in {'h1','h2','h3','h4','h5'}]
     matched=next((h for h in headings if title_matches(record['title'],h.text())),None)
     sid=record['source_id']
+    if sid=='jobrxiv':
+        # Employment type/new badges are separate children of the H1, not
+        # part of the vacancy title. Do not use a fuzzy cross-job match.
+        matched=next((h for h in doc.all('h1') if title_matches(record['title'],' '.join(c for c in h.children if isinstance(c,str)))),None)
     if sid=='stanford':
         mentor=record['title'].rsplit('·',1)[-1].strip()
         matched=next((h for h in doc.all('h1') if 'postdoc' in h.text().lower() and len(canonical_title(mentor))>=5 and canonical_title(mentor) in canonical_title(h.text())),None)
@@ -92,6 +96,8 @@ def notice_body(doc,record,Document):
             body_node=next(doc.all('article','node--type-job-posting'),None);locator='article:node--type-job-posting'
         elif sid=='jobsuk':
             body_node=find_attr(doc,'id','job-description') or next(doc.all('div','j-advert__text'),None);locator='job-description'
+        elif sid=='jobrxiv':
+            body_node=next(doc.all('div','job_description'),None);locator='div:job_description'
     if sid=='jrec':
         # JREC uses a bilingual title field, not a page H1. Match that field,
         # then confine indexing to the individual notice card body.
@@ -141,11 +147,16 @@ def detail_document(record,client,Document):
     return doc
 
 def enrich_record(record,client,Document,parse_date,now):
+    try:
+        from notice_details import extract_details
+    except ModuleNotFoundError:
+        from scripts.notice_details import extract_details
     doc=detail_document(record,client,Document)
     body,locator,posting=notice_body(doc,record,Document)
     words,phrases=terms(body)
     result=dict(record,search_terms=words,search_phrases=phrases,detail_status='indexed',
-                detail_checked_at=now,detail_locator=locator,detail_index_version=INDEX_VERSION)
+                detail_checked_at=now,detail_locator=locator,detail_index_version=INDEX_VERSION,
+                notice_details=extract_details(doc,body,posting,record))
     result.pop('detail_error',None)
     result.pop('detail_refresh_failed',None)
     deadline=posting.get('validThrough')
@@ -183,7 +194,7 @@ def body_coverage(rows):
                 body_pending=len(rows)-indexed-unavailable,
                 body_refresh_failed=sum(bool(r.get('detail_refresh_failed')) for r in rows))
 
-CACHE_FIELDS=('search_terms','search_phrases','detail_status','detail_checked_at','detail_locator','detail_index_version','detail_attempted_at','detail_error','detail_refresh_failed')
+CACHE_FIELDS=('search_terms','search_phrases','detail_status','detail_checked_at','detail_locator','detail_index_version','detail_attempted_at','detail_error','detail_refresh_failed','notice_details')
 def enrich_source(rows,source,previous,Client,Document,parse_date,now):
     budget=source.get('detail_budget',0)
     old={r['id']:r for r in previous.get('jobs',[])}

@@ -3,9 +3,9 @@ name: Website checks and GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   pull_request:
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
@@ -44,8 +44,9 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           mkdir -p _site/data
-          cp web/index.html web/style.css web/app.mjs web/core.mjs web/jobs.mjs web/favicon.svg _site/
-          cp web/data/sources.json web/data/jobs.json _site/data/
+          cp web/index.html web/style.css web/app.mjs web/core.mjs web/jobs.mjs web/career.mjs web/profile.mjs web/cv-reader.mjs web/favicon.svg _site/
+          cp web/data/sources.json web/data/jobs.json web/data/hosts.json _site/data/
+          cp -R web/vendor _site/vendor
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         if: github.event_name != 'pull_request'
