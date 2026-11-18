@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {matchesJob,expired,searchJobs} from '../jobs.mjs';
+const job={title:'Postdoc in remote sensing',institution:'Example University',country:'荷兰',source_id:'test',url:'https://example.org/job',summary:'Soil carbon research',posted_at:'2026-11-01',deadline_at:'2026-12-01T12:00:00Z'};
+test('Chinese topic search returns English titles without a model',()=>{assert.ok(matchesJob(job,'遥感'));assert.ok(matchesJob(job,'土壤 碳'));assert.ok(!matchesJob(job,'遥感 medicine'));});
+test('text search is case-insensitive and treats punctuation as text',()=>{assert.ok(matchesJob(job,'EXAMPLE'));assert.ok(!matchesJob(job,'<img>'));});
+test('country and source filters intersect rather than widening the search',()=>{assert.equal(searchJobs([job],{country:'美国'}).length,0);assert.equal(searchJobs([job],{country:'荷兰',source:'test',now:new Date('2026-11-18')}).length,1);});
+test('precise deadlines honor the source timezone',()=>{assert.equal(expired({...job,deadline_at:'2026-11-18T15:00:00+08:00'},new Date('2026-11-18T07:01:00Z')),true);assert.equal(expired({...job,deadline_at:'2026-11-18T15:00:00+08:00'},new Date('2026-11-18T06:59:00Z')),false);});
+test('missing dates remain unknown, malformed links cannot become results',()=>{assert.equal(expired({...job,deadline_at:''}),false);assert.equal(searchJobs([{...job,url:'javascript:alert(1)'}],{hideExpired:false}).length,0);});
+test('expired positions are opt-in and deadline sort leaves unknowns last',()=>{const old={...job,title:'Old',deadline_at:'2020-01-01T00:00:00Z'},unknown={...job,title:'Unknown',deadline_at:''};assert.equal(searchJobs([old,job,unknown],{now:new Date('2026-11-18')}).length,2);const list=searchJobs([unknown,job,old],{hideExpired:false,sort:'deadline'});assert.deepEqual(list.map(j=>j.title),['Old',job.title,'Unknown']);});

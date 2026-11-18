@@ -9,6 +9,20 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PhoneDateTests(unittest.TestCase):
+    def test_public_job_id_is_not_phone_but_adjacent_phone_is_retained(self):
+        url = 'https://jobs.csiro.au/job/example/' + ''.join(('12345', '67890')) + '/'
+        self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(url)))
+        phone = '+' + '1 ' + '202 ' + '555 ' + '0123'
+        self.assertIsNotNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(url + ' ' + phone)))
+
+    def test_unknown_host_and_url_query_phone_remain_visible(self):
+        phone = ''.join(('12345', '67890'))
+        for url in ('https://unknown.example/' + phone, 'https://jobs.csiro.au/job/example/1/?phone=' + phone):
+            self.assertIsNotNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(url)))
+
+    def test_svg_geometry_is_not_phone(self):
+        self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text('<svg viewBox="0 0 24 24">')))
+
     def test_valid_calendar_date_is_not_phone(self):
         self.assertIsNone(MODULE.PATTERNS["phone-like"].search(MODULE.phone_scan_text("Checked 2026-11-18")))
 

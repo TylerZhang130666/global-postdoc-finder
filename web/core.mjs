@@ -1,5 +1,5 @@
-export const TYPES = {advertised_job:'已发布岗位', fellowship:'博后基金', potential_host:'导师与团队线索'};
-export const PROGRESS = {saved:'刚收藏', checking:'核实中', preparing:'准备材料', contacted:'已联系', applied:'已申请', archived:'已归档'};
+export const TYPES = {advertised_job:'岗位', fellowship:'基金', potential_host:'团队'};
+export const PROGRESS = {saved:'已收藏', checking:'核实中', preparing:'准备材料', contacted:'已联系', applied:'已申请', archived:'已归档'};
 export const CRITERIA = {degree_timing:'学位与毕业时间', start_date:'可接受的入职时间', language:'语言要求', nationality:'国籍要求（如有）', residence:'流动性 / 居留要求', user_constraints:'薪酬、合同与个人条件'};
 export const RESULTS = {unknown:'待核实', pass:'已有证据支持', fail:'确认不符合', not_applicable:'不适用'};
 export const ACCESS = {unconfirmed:'申请状态待确认', open:'记录为开放', scheduled:'后续轮次', closed:'记录为关闭', not_applicable:'未确认招聘空缺'};

@@ -1,8 +1,8 @@
 # Global Postdoc Finder｜全球博士后搜索助手
 
-**网页版：[打开博后搜索工作台](https://TylerZhang130666.github.io/global-postdoc-finder/)**
+**网页版：[博后搜索](https://tylerzhang130666.github.io/global-postdoc-finder/)**
 
-不需要安装 Skill 或配置 API。可筛选官方检索入口、逐项记录招聘证据、收藏机会并管理申请进度，支持 JSON / CSV 导出。清单只保存在本机浏览器；链接功能不自动读取公告或确认资格。[网页版说明与部署](web/README.md)
+直接搜索已收录的博后岗位，筛选地区、查看详情、一键收藏。每天两次尝试同步公开招聘列表，无需模型 API；收藏保存在当前浏览器，支持 JSON / CSV 导出。[数据来源与部署说明](web/README.md)
 
 ## English overview
 

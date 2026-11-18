@@ -13,6 +13,8 @@ PATTERNS = {
 }
 
 ISO_DATE = re.compile(r"(?<![+\w])\d{4}-\d{2}-\d{2}(?![\d-])")
+PUBLIC_JOB_URL = re.compile(r'https://(?:postdocs\.yale\.edu/posts/|jobs\.csiro\.au/job/)[^\s<>"\'?]+')
+SVG_VIEWBOX = re.compile(r'viewBox="[\d.\s-]+"', re.I)
 
 def phone_scan_text(line: str) -> str:
     """Avoid reporting valid ISO calendar dates as phone numbers."""
@@ -20,6 +22,10 @@ def phone_scan_text(line: str) -> str:
         try: date.fromisoformat(match.group())
         except ValueError: return match.group()
         return " " * len(match.group())
+    # Only these published job-path patterns are exempt, never URL query data,
+    # credentials, other hosts or phone/email text outside the URL.
+    line = PUBLIC_JOB_URL.sub(lambda m: ' ' * len(m.group()), line)
+    line = SVG_VIEWBOX.sub(lambda m: ' ' * len(m.group()), line)
     return ISO_DATE.sub(replace_date, line)
 def scan(root: Path) -> int:
     findings = 0
