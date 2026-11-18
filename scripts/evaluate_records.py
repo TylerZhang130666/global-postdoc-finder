@@ -7,7 +7,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
-RULE_VERSION = "2026-11-18"
+RULE_VERSION = "2026-11-18.1"
 WEIGHTS = (30, 25, 20, 10, 10, 5)
 BASE_CHECKS = ("degree_timing", "start_date", "language", "user_constraints")
 TYPES = {"advertised_job", "fellowship", "potential_host"}
@@ -104,7 +104,10 @@ def evaluate_record(record, as_of):
     unknowns = [c for c in normalized if c["result"] == "unknown"]
     output["eligibility_status"] = "ineligible" if failures else "unknown" if unknowns else "eligible"
     expired = bool(deadline and record.get("deadline_verified") and deadline < as_of)
-    vacancy_closed = kind == "advertised_job" and (expired or record.get("availability_closed", False))
+    vacancy_closed = kind == "advertised_job" and (
+        expired or record.get("availability_closed", False) or
+        (evidence == "verified" and access == "closed")
+    )
     if failures or vacancy_closed:
         reasons = ["Confirmed failure: " + c["criterion"] for c in failures]
         if vacancy_closed:

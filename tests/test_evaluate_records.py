@@ -1,5 +1,6 @@
 import copy
 import importlib.util
+import json
 import math
 from pathlib import Path
 import unittest
@@ -43,6 +44,24 @@ class EvaluationTests(unittest.TestCase):
     def test_verified_expired_vacancy_is_excluded(self):
         item = record(); item.update(deadline_date="2026-11-17", deadline_verified=True)
         self.assertEqual(MODULE.evaluate_record(item, AS_OF)["action_priority"], "Excluded")
+
+    def test_verified_closed_access_job_is_excluded_before_scoring(self):
+        for closure_flag in (None, False):
+            with self.subTest(availability_closed=closure_flag):
+                item = record(); item.update(application_access="closed", scores=[5] * 6)
+                if closure_flag is not None:
+                    item["availability_closed"] = closure_flag
+                result = MODULE.evaluate_record(item, AS_OF)
+                self.assertEqual(result["action_priority"], "Excluded")
+                self.assertTrue(result["confirmed_blocker"])
+                self.assertIsNone(result["weighted_score_100"])
+                self.assertIsNone(result["match_band"])
+
+    def test_unverified_closed_access_is_not_confirmed_exclusion(self):
+        item = record(); item.update(application_access="closed", evidence_status="secondary_only")
+        result = MODULE.evaluate_record(item, AS_OF)
+        self.assertEqual(result["action_priority"], "C")
+        self.assertFalse(result["confirmed_blocker"])
 
     def test_unverified_aggregator_deadline_does_not_exclude(self):
         item = record(); item.update(evidence_status="secondary_only", deadline_date="2026-11-17", deadline_verified=False)
@@ -111,6 +130,12 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(item, original)
         self.assertEqual(result["action_priority"], "B")
         self.assertTrue(any(c["criterion"] == "residence" and c["result"] == "unknown" for c in result["eligibility_checks"]))
+
+    def test_saved_trial_replays_with_current_rules(self):
+        folder = SCRIPT.parents[1] / "examples" / "anonymous-trial-2026-11-18"
+        inputs = json.loads((folder / "normalized-records.json").read_text(encoding="utf-8"))
+        expected = json.loads((folder / "replayed-results.json").read_text(encoding="utf-8"))
+        self.assertEqual(MODULE.evaluate_records(inputs, AS_OF), expected)
 
 
 if __name__ == "__main__":

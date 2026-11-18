@@ -47,6 +47,8 @@ python scripts/evaluate_records.py examples/anonymous-trial-2026-11-18/normalize
 
 The saved [replayed-results.json](replayed-results.json) contains 0 action A, 4 B, 7 C, 4 Excluded and 3 Host only. E01 changes from the historical Excluded label to unknown eligibility with action C pending evidence/scoring. The three hosts lose employment-like A/B labels and are explicitly marked Host only; their research fit remains in the original narrative.
 
+The replay now identifies rule revision `2026-11-18.1`, which also excludes a verified closed advertised vacancy when `application_access` is `closed` and the auxiliary closure flag is absent or false. None of these 18 interpreted inputs change action priority under that fix. The original HTML, workbook and first-run results remain unchanged. The [README preview](report-preview.png) is an actual browser capture of the saved HTML, with no changes to its report content.
+
 This replay did not refresh URLs or obtain new candidate answers. It demonstrates deterministic handling of the interpreted snapshot, not improved search accuracy, vacancy availability, or success in applications.
 
 ## Validation and limitations

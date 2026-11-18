@@ -1,5 +1,22 @@
 # Global Postdoc Finder｜全球博士后搜索助手
 
+## English overview
+
+A reusable Codex workflow that helps researchers discover postdoctoral opportunities, verify source evidence, check eligibility, and prioritize next actions using their research profile and location preferences.
+
+- **Workflow:** profile → search → source verification → eligibility checks → weighted match score → action priority and tracker. Vacancies, fellowships, and potential hosts remain separate.
+- **Implementation:** Codex and its tools perform CV interpretation, web search, and evidence judgments. Standard-library Python helpers calculate scores and apply decision gates; they do not implement a standalone crawler or agent platform.
+- **Real example:** a 2026-11-18 global trial used 35 queries and produced 18 records: 11 vacancy notices/leads, 4 fellowships, and 3 hosts. Zero vacancies had all candidate eligibility and start-date conditions confirmed. [Read the case](examples/anonymous-trial-2026-11-18/case-study.md) or [inspect the structured results](examples/anonymous-trial-2026-11-18/original-results.json).
+- **Validation:** 23 local unit tests cover decision rules and the saved-case replay. [GitHub Actions configuration](.github/workflows/python-checks.yml) targets Linux/Python 3.11 and Windows/Python 3.13; local success does not establish a successful hosted run. Search accuracy, time savings, and comparative improvements have not been measured.
+
+### Actual report preview
+
+![Saved report showing prioritized follow-up actions, eligibility gaps and a scored vacancy record](examples/anonymous-trial-2026-11-18/report-preview.png)
+
+Screenshot of the original HTML report, showing follow-up actions and a record with evidence gaps. This is the **2026-11-18 historical snapshot**, not a claim that the vacancy is currently open. [Download the report](examples/anonymous-trial-2026-11-18/Global_Postdoc_Trial_Report.html) and open it in a browser to use its filters.
+
+## 中文介绍
+
 一个可复用的 Codex Skill，用于根据使用者自己的研究背景、方法、成果、地区偏好和入职时间，搜索、核实、比较并排序全球博士后及相邻研究岗位。
 
 它不会默认欧洲、美国或名校优先。使用者指定哪个国家、地区、城市或机构优先，它就先搜索哪里；只有明确说“全球都可以”时，才进行全球分区搜索。
@@ -171,6 +188,10 @@ python scripts/privacy_scan.py .
 ```
 
 测试覆盖评分阈值、缺失资格、过期岗位、二手截止日、邀请阶段、未来轮次、重复ID、缺失分数与无效输入，以及隐私扫描中日期与电话模式的区分。测试通过只证明这些规则按输入执行，不能证明检索与人工解释准确。
+
+本地23项测试已通过，包括“官方已确认关闭，但未另设 `availability_closed=true`”的回归测试；规则修订为 `2026-11-18.1`。该情形下招聘岗位先排除、不计算匹配分；未核实的关闭线索及关闭的基金轮次保持独立处理。案例回放仍为0条A、4条B、7条C、4条确认排除及3个潜在团队。
+
+[自动测试配置](.github/workflows/python-checks.yml)在推送到 `main`、Pull Request或手动触发时执行单元测试、保存案例回归、离线回放CLI及文本隐私模式扫描。本地测试通过不等于GitHub托管环境通过，托管结果以Actions运行记录为准。
 
 岗位追踪CSV模板保留原有35列，并追加资格状态、证据状态、阶段入口、时间原文与时区、原始分档、行动等级和解释等字段。结构化资格对象在CSV中以JSON文本存储；脚本直接使用JSON记录，字段定义见筛选参考。
 

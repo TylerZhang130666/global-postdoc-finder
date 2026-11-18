@@ -81,7 +81,7 @@ Additional fields:
 - `deadline_date`: ISO calendar date or null. `deadline_verified`: boolean, default false. A verified deadline requires `evidence_status: verified` and `source_url`.
 - `deadline_source_wording`, `deadline_timezone`, `date_checked`, `source_locator`: retain source precision and provenance. These are not automatically verified by the helper.
 - `invitation_confirmed`: true, false or null; relevant to `invitation_only`.
-- `availability_closed`: boolean, default false, for a verified employer closure without a dated deadline.
+- `availability_closed`: boolean, default false, for a verified employer closure without a dated deadline. A verified advertised job with `application_access: closed` is also excluded even if this auxiliary flag is absent or false. This does not apply to a closed fellowship round, which remains an access issue.
 - `source_url` and `date_checked`: needed for verified evidence. Each `fail` requires verified evidence and a source URL; unsupported failures must be unknown instead. A date before the snapshot remains a dated observation, not proof that the page is unchanged.
 
 The helper validates shape, computes calendar-date expiration, retains explicit unknowns and applies gates. It trusts the supplied interpretation of evidence. It does not parse source prose, discover omitted conditions, prove international eligibility, or replace the candidate/employer's confirmation. Saved evidence may become stale.
