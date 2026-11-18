@@ -30,10 +30,12 @@ SOURCES=[
  dict(id='ubc-science',institution='University of British Columbia',country='加拿大',department='Faculty of Science',url='https://www.grad.ubc.ca/prospective-students/faculties/faculty-science',parser='ubc',pages=4,scope='Research Supervisors 表，最多100条；物理、数学、生物、地学等方向'),
  dict(id='njau-environment',institution='南京农业大学',country='中国',department='资源与环境科学学院',url='https://re.njau.edu.cn/jsfc2.jsp?urltype=tree.TreeTempUrl&wbtreeid=1325',parser='njau',pages=8,scope='官网六个院系公开查询；仅保留导师标识与教授/研究员职称，排除退休标识'),
  dict(id='bonn-geography',institution='University of Bonn',country='德国',department='Department of Geography',url='https://www.geographie.uni-bonn.de/en/research/research-groups',parser='bonn',pages=1,scope='公开研究组与研究方向；团队条目，不臆造负责人姓名'),
+ dict(id='zalf-groups',institution='Leibniz Centre for Agricultural Landscape Research (ZALF)',country='德国',department='Research groups',url='https://www.zalf.de/en/struktur/Pages/default.aspx',parser='zalf',pages=6,scope='四个研究领域及创新中心公开研究组负责人/联系人；优先读取个人 Expertise / Tasks，不把全体员工当导师'),
 ]
 
 def clean(text,limit=300):
     text=re.sub(r'<[^>]+>',' ',unescape(str(text or '')))
+    text=re.sub(r'[\u200b-\u200d\ufeff]','',text)
     text=re.sub(r'\s+',' ',text).strip()
     text=re.sub(r'https?://\S+|\S+@\S+','',text)
     text=re.sub(r'(?:E-?mail|Telefone|Phone|电话|联系方式)\s*[:：].*','',text,flags=re.I)
@@ -172,6 +174,10 @@ def collect(source,now,cache_dir=None):
     rows=[]
     try:
         client=Client(source);url=source['url'];visited=set()
+        if source['parser']=='zalf':
+            try:from host_zalf import collect_zalf
+            except ModuleNotFoundError:from scripts.host_zalf import collect_zalf
+            return collect_zalf(client,source,now,row,clean,Document,cache_dir)
         for page in range(source['pages']):
             if not url or url in visited:break
             if urlsplit(url).hostname!=urlsplit(source['url']).hostname:raise ValueError('Unexpected directory pagination host')

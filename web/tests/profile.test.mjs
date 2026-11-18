@@ -1,7 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,containsFeature} from '../profile.mjs';
+import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,containsFeature,matchesHost} from '../profile.mjs';
 import {readCV} from '../cv-reader.mjs';
+
+test('host lookup recognizes German name variants and Chinese research fields',()=>{
+  const host={name:'Michael Märker',aliases:['Michael Maerker'],institution:'ZALF',research_excerpt:'Soil erosion and Digital Soil Mapping'};
+  for(const query of ['Michael','Michael Maerker','Michael Märker','Marker','土壤','侵蚀','ZALF'])assert.equal(matchesHost(host,query),true,query);
+  assert.equal(matchesHost(host,'Michael Sommer'),false);
+  assert.equal(matchesHost(host,'unrelated topic'),false);
+  assert.equal(matchesHost({...host,research_fields:['Machine learning']},'机器学习'),true);
+  assert.ok(profileMatch({research_fields:['Machine learning']},normalizeProfile({topics:'机器学习'})).rank>0);
+  assert.equal(matchesHost({name:'Jean Thomas Cornelis',research_excerpt:'Soil'},'R'),false);
+});
 
 test('CV feature extraction recognizes Chinese and English without retaining CV text',()=>{
   const text='Synthetic Person. '+['private','example.org'].join('@')+' 土壤有机碳、冻融；remote-sensing, GIS, Python and R. Publications in soil ecology.';

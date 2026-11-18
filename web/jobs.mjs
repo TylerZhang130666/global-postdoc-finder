@@ -1,5 +1,5 @@
 import {safeURL,today} from './core.mjs';
-import {profileMatch} from './profile.mjs?v=8';
+import {profileMatch} from './profile.mjs?v=9';
 
 const TOPICS = {
   土壤:['soil'], 碳:['carbon'], 生态:['ecology','ecological'], 遥感:['remote sensing','hyperspectral','satellite'],

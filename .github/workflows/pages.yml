@@ -3,9 +3,9 @@ name: Website checks and GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'scripts/host_zalf.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   pull_request:
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'scripts/host_zalf.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:

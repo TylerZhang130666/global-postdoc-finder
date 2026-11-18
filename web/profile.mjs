@@ -52,6 +52,12 @@ for(const [key,names] of Object.entries({...TOPICS,...METHODS})){
   for(const name of values)FEATURE_ALIASES.set(normalized(name),values);
 }
 export function aliases(term){return FEATURE_ALIASES.get(normalized(term))??[term];}
+export function matchesHost(host,query){
+  if(!query.trim())return true;
+  const text=[host.name,...(host.aliases??[]),host.institution,host.department,host.research_excerpt,...(host.research_fields??[]),...(host.topics??[]),...(host.search_terms??[])].join(' ');
+  const fold=(value,german)=>normalized(value).replace(/[äöüß]/g,c=>german?({ä:'ae',ö:'oe',ü:'ue',ß:'ss'}[c]):c).normalize('NFD').replace(/\p{M}/gu,'');
+  return aliases(query).some(term=>containsFeature(text,term)||[true,false].some(german=>containsFeature(fold(text,german),fold(term,german))));
+}
 export function inferProfile(text){
   text=String(text).slice(0,100000).replace(/https?:\/\/\S+|\S+@\S+/g,' ');
   const detected=dict=>Object.entries(dict).filter(([,a])=>a.some(t=>containsFeature(text,t))).map(([k])=>k);
@@ -75,7 +81,7 @@ export function normalizeProfile(raw){
 }
 export function profileMatch(item,profile){
   const text=[item.title,item.name,item.institution,item.department,item.summary,item.research_excerpt,
-    ...(item.search_terms??[]),...(item.search_phrases??[]),...(item.topics??[])].filter(Boolean).join(' ');
+    ...(item.research_fields??[]),...(item.search_terms??[]),...(item.search_phrases??[]),...(item.topics??[])].filter(Boolean).join(' ');
   const matchedTopics=profile.topics.filter(t=>aliases(t).some(a=>containsFeature(text,a)));
   const matchedMethods=profile.methods.filter(t=>aliases(t).some(a=>containsFeature(text,a)));
   const missing=[...profile.topics,...profile.methods].filter(t=>![...matchedTopics,...matchedMethods].includes(t));

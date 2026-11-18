@@ -1,7 +1,7 @@
 import {safeURL,today} from './core.mjs';
-import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,aliases,containsFeature} from './profile.mjs?v=8';
-import {expired} from './jobs.mjs?v=8';
-import {readCV} from './cv-reader.mjs?v=8';
+import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,matchesHost} from './profile.mjs?v=9';
+import {expired} from './jobs.mjs?v=9';
+import {readCV} from './cv-reader.mjs?v=9';
 
 const KEY='global-postdoc-finder:profile:v1';
 const $=id=>document.getElementById(id);
@@ -98,7 +98,7 @@ export function initCareer({onSaveHost,isSaved,onProfile,goToJobs}){
   }
   function renderHosts(){
     const query=$('host-query').value.trim().toLowerCase(),country=$('host-region').value,institution=$('host-institution').value;
-    let selected=hosts.filter(h=>(country==='all'||h.country===country)&&(institution==='all'||h.institution===institution)&&(!query||aliases(query).some(term=>containsFeature([h.name,h.institution,h.department,h.research_excerpt,...(h.topics??[]),...(h.search_terms??[])].join(' '),term))));
+    let selected=hosts.filter(h=>(country==='all'||h.country===country)&&(institution==='all'||h.institution===institution)&&matchesHost(h,query));
     if($('host-mine').checked){selected=matching(selected).map(x=>x.item);}
     const pages=Math.max(1,Math.ceil(selected.length/12));hostPage=Math.min(hostPage,pages);
     $('host-count').textContent=`${selected.length} 位导师 / 团队`;$('host-results').replaceChildren();
@@ -113,6 +113,8 @@ export function initCareer({onSaveHost,isSaved,onProfile,goToJobs}){
       const save=el('button',isSaved(host.url,host.name)?'已收藏':'收藏团队','save-job');save.disabled=isSaved(host.url,host.name);save.addEventListener('click',()=>{onSaveHost(host);renderHosts();});actions.append(save);card.append(actions);
       const more=el('details');more.append(el('summary','来源与相关公告'),el('p',host.research_basis,'muted'),el('p','资料读取：'+host.checked_at?.slice(0,10),'muted'));
       if(host.evidence_url)more.append(link('证据原页 ↗',host.evidence_url));
+      if(host.group_evidence_url&&host.group_evidence_url!==host.evidence_url)more.append(link('研究组名录 ↗',host.group_evidence_url));
+      if(host.research_fields?.length){const list=el('ul');for(const field of host.research_fields)list.append(el('li',field));more.append(el('p','官网研究字段'),list);}
       for(const j of host.related_jobs??[]){more.append(link(j.title,j.url),el('p',j.deadline_at?'截止：'+j.deadline_at.slice(0,10):'截止未注明','muted'));}
       card.append(more);$('host-results').append(card);
     }
@@ -127,7 +129,7 @@ export function initCareer({onSaveHost,isSaved,onProfile,goToJobs}){
       for(const institution of [...new Set(hosts.map(h=>h.institution))].sort()){const o=el('option',institution);o.value=institution;$('host-institution').append(o);}
       $('host-coverage-list').replaceChildren();
       for(const source of d.directory_sources??[]){
-        const item=el('li');item.append(link(source.institution,source.url),el('p',`${source.count??0} 条原始记录 · ${source.country} · ${source.status==='ok'?'已读完该名录':source.coverage==='page_limit'?'分批收录，尚未读完':source.status==='partial'?'部分读取':'本次未读到'} · ${source.observed_at?.slice(0,10)??'暂无成功读取日期'}`),el('p',source.scope,'muted'));$('host-coverage-list').append(item);
+        const item=el('li');item.append(link(source.institution,source.url),el('p',`${source.count??0} 条原始记录 · ${source.country} · ${source.coverage==='listed_group_contacts'?'已读取公开研究组联系人':source.status==='ok'?'已读完该名录':source.coverage==='page_limit'?'分批收录，尚未读完':source.status==='partial'?'部分读取':'本次未读到'} · ${source.observed_at?.slice(0,10)??'暂无成功读取日期'}`),el('p',source.scope,'muted'));$('host-coverage-list').append(item);
       }
       for(const country of [...new Set(hosts.map(h=>h.country))].sort()){const o=el('option',country);o.value=country;$('host-region').append(o);}renderHosts();renderMatches();
     }catch{$('host-caption').textContent='导师库暂时无法加载，请刷新页面重试。';}
