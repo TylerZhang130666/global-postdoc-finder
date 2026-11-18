@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="博后搜索工作台：官方检索入口、逐项核验、收藏与申请清单。无需注册，数据保存在本机浏览器。">
+  <meta name="color-scheme" content="light"><meta name="referrer" content="no-referrer">
+  <title>博后搜索工作台 · Global Postdoc Finder</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+<body>
+<a class="skip" href="#main">跳到内容</a>
+<div class="page">
+  <header class="masthead"><a class="wordmark" href="./">GLOBAL POSTDOC FINDER <span>博后搜索工作台</span></a><a href="https://github.com/TylerZhang130666/global-postdoc-finder" target="_blank" rel="noopener noreferrer" class="repo">GitHub ↗</a></header>
+  <div class="intro"><p class="eyebrow">给正在找博后的你</p><h1>找博后，从这里开始。</h1><p>查官方来源，逐项核实，把值得跟进的机会存下来。</p><div class="local-note"><span class="dot"></span>无需注册 · 清单保存在本机浏览器 · 随时导出</div></div>
+  <nav class="tabs" aria-label="工作台"><button id="tab-search" role="tab" aria-controls="search-panel" aria-selected="true" data-tab="search">01 <span>找机会</span></button><button id="tab-verify" role="tab" aria-controls="verify-panel" aria-selected="false" data-tab="verify">02 <span>核实链接</span></button><button id="tab-list" role="tab" aria-controls="list-panel" aria-selected="false" data-tab="list">03 <span>我的清单</span> <small id="list-count">0</small></button></nav>
+  <main id="main">
+    <section id="search-panel" role="tabpanel" aria-labelledby="tab-search">
+      <div class="search-layout">
+        <aside class="search-settings"><h2>这次找什么？</h2><form id="search-form">
+          <label>研究关键词<input id="keywords" placeholder="例如 soil carbon / GIS" maxlength="160"><small>建议用英文方向、方法或课题名</small></label>
+          <label>地区<select id="region"><option value="all">全部地区</option><option value="europe">欧洲</option><option value="germany">德国</option><option value="netherlands">荷兰</option><option value="uk">英国</option><option value="china-hk">中国香港</option><option value="japan">日本</option><option value="us">美国</option><option value="australia">澳大利亚</option><option value="brazil">巴西</option></select></label>
+          <label>机会类型<select id="route"><option value="all">全部类型</option><option value="advertised_job">已发布岗位</option><option value="fellowship">博后基金</option><option value="potential_host">导师与团队线索</option></select></label>
+          <button class="primary full" type="submit">整理检索入口 →</button>
+        </form><p class="aside-note">这里只整理来源入口，不代表已搜索这些网站，也不代表存在适合你的空缺。</p><details class="help"><summary>关键词怎么选？</summary><p>方向 + 方法通常比只搜“postdoc”更具体，例如 soil carbon + modelling。进入来源后，再核对地点、学位时间和招聘条件。</p></details></aside>
+        <div class="source-area"><div class="section-heading"><div><h2>先从官方来源查起</h2><p id="source-caption"></p></div><span id="source-count" class="count-label"></span></div><p class="source-tip">“关键词检索”会通过 Google 查找该站页面；结果仍需回到原公告确认。</p><div id="source-list"></div></div>
+      </div>
+    </section>
+    <section id="verify-panel" role="tabpanel" aria-labelledby="tab-verify" hidden>
+      <div class="section-heading"><div><h2>看到一个机会，先核实这些</h2><p>打开原公告，对照填写。保留不确定的地方，比猜一个答案更有用。</p></div></div>
+      <form id="opportunity-form">
+        <div class="url-box"><label for="source-url">招聘、基金或团队链接</label><div class="url-row"><input id="source-url" type="url" placeholder="https://…" required maxlength="2048"><button type="button" id="inspect-url" class="secondary">识别网址</button></div><p id="url-feedback" class="muted">网址识别只检查格式与已收录来源，不读取公告正文，也不判断岗位开放状态。</p></div>
+        <div class="form-columns"><div><h3>机会信息</h3><label>标题<input id="record-title" required maxlength="300" placeholder="招聘标题或基金名称"></label><div class="two-fields"><label>机构<input id="institution" maxlength="200" placeholder="大学 / 研究所 / 团队"></label><label>国家或地区<input id="country" maxlength="100" placeholder="公告中的工作地点"></label></div><div class="two-fields"><label>类型<select id="record-type"><option value="advertised_job">已发布岗位</option><option value="fellowship">博后基金</option><option value="potential_host">导师与团队线索</option></select></label><label>跟进进度<select id="progress"><option value="saved">刚收藏</option><option value="checking">核实中</option><option value="preparing">准备材料</option><option value="contacted">已联系</option><option value="applied">已申请</option><option value="archived">已归档</option></select></label></div><div class="two-fields"><label>截止日期（选填）<input id="deadline" type="date"><small>时刻、时区及轮次请记在证据中</small></label><label>最近人工核验<input id="checked-on" type="date"><small>只填写你实际查看公告的日期</small></label></div><label>公告申请状态<select id="availability"><option value="unconfirmed">尚未确认</option><option value="open">公告显示开放</option><option value="scheduled">后续轮次 / 尚未开始</option><option value="closed">公告或雇主确认关闭</option><option value="not_applicable">团队线索，没有确认岗位</option></select></label><label>下一步<input id="next-action" maxlength="500" placeholder="例如：确认能否在毕业后入职"></label></div>
+        <div><h3>逐项核实 <small>由你判断，可保留待核实</small></h3><div id="check-fields" class="check-fields"></div><label>证据与备注<textarea id="evidence" rows="6" maxlength="12000" placeholder="记录原文片段、所在小节、相关链接，以及尚未确认的问题。"></textarea></label><p class="muted">基金申请不等于现成岗位；潜在导师也不等于正在招聘。本页不自动计算匹配分或判断资格。</p></div></div>
+        <div class="form-footer"><p id="editing-label">保存后可在“我的清单”里继续补充。</p><div><button type="button" id="reset-form" class="text-button">清空表单</button><button type="submit" class="primary">保存到我的清单</button></div></div>
+      </form>
+    </section>
+    <section id="list-panel" role="tabpanel" aria-labelledby="tab-list" hidden>
+      <div class="section-heading"><div><h2>我的机会清单</h2><p>先收集，再核实，一次往前推进一点。</p></div><button id="add-record" class="primary">+ 添加机会</button></div>
+      <div class="stats" id="stats"></div>
+      <div class="list-toolbar"><label class="sr-only" for="list-query">搜索我的清单</label><input id="list-query" type="search" placeholder="搜索标题、机构、地区或备注"><label class="sr-only" for="list-type">筛选类型</label><select id="list-type"><option value="all">全部类型</option><option value="advertised_job">已发布岗位</option><option value="fellowship">博后基金</option><option value="potential_host">导师与团队线索</option></select><label class="sr-only" for="list-progress">筛选进度</label><select id="list-progress"><option value="all">全部进度</option><option value="saved">刚收藏</option><option value="checking">核实中</option><option value="preparing">准备材料</option><option value="contacted">已联系</option><option value="applied">已申请</option><option value="archived">已归档</option></select></div>
+      <p id="list-caption" class="muted"></p><div id="records"></div>
+      <div class="data-tools"><div><h3>把清单带走</h3><p>JSON 用于备份、换浏览器或与 Skill 交换；CSV 方便用表格查看。浏览器清理数据后，本机清单可能丢失。</p></div><div class="data-buttons"><button id="export-json" class="secondary">导出 JSON</button><button id="export-csv" class="secondary">导出 CSV</button><button id="import-button" class="secondary">导入 JSON</button><input id="import-file" type="file" accept=".json,application/json" hidden></div></div>
+      <details class="help"><summary>如何与博后搜索 Skill 配合？</summary><p>可以导入 Skill 产生的规范化 JSON 记录，或把这里导出的 JSON 交给 Skill，要求按官方来源重新核实。导入会保留原记录，但不会刷新证据、重新评分或替你确认仍在招聘。</p></details>
+    </section>
+    <div id="storage-problem" class="storage-problem" hidden><p id="storage-message"></p><button id="recover-storage" class="secondary">下载原始本机数据</button></div>
+  </main>
+  <footer><p>一个朴素的博后搜索工具。<a href="https://github.com/TylerZhang130666/global-postdoc-finder" target="_blank" rel="noopener noreferrer">开源项目 ↗</a></p><p>来源目录维护于 2026-11-18 · 无自动抓取 · 无模型 API</p></footer>
+</div><div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+<noscript><p>请启用 JavaScript 来使用本机收藏与清单功能。官方来源目录也可在 GitHub 仓库中查看。</p></noscript>
+</body></html>

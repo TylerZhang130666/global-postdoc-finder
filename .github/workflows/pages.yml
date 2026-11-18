@@ -1,0 +1,56 @@
+name: Website checks and GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'references/source-catalog.json', '.github/workflows/pages.yml']
+  pull_request:
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'references/source-catalog.json', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Refresh public source directory
+        run: python scripts/build_web_catalog.py
+      - name: Check website logic
+        run: node --test web/tests/core.test.mjs
+      - name: Prepare static files only
+        if: github.event_name != 'pull_request'
+        run: |
+          mkdir -p _site/data
+          cp web/index.html web/style.css web/app.mjs web/core.mjs web/favicon.svg _site/
+          cp web/data/sources.json _site/data/
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v4
+        if: github.event_name != 'pull_request'
+        with:
+          path: _site
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v4
+        id: deployment

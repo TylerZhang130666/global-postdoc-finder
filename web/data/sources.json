@@ -1,0 +1,576 @@
+{
+  "checked_on": "2026-11-18",
+  "sources": [
+    {
+      "source_id": "euraxess_jobs",
+      "name": "EURAXESS Jobs",
+      "url": "https://euraxess.ec.europa.eu/jobs/search?f%5B0%5D=offer_type%3Ajob_offer",
+      "regions": [
+        "欧洲为主；也收录其他地区，按具体地点筛选"
+      ],
+      "disciplines": [
+        "研究岗位多学科"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "job_portal",
+      "search_method": "从 Jobs & Opportunities 的 Search for jobs 进入；用研究方向、研究者阶段和工作地点筛选，再到雇主原始公告核验。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "jobs 介绍页无需登录可读；搜索端点403，不能据此推断需要登录。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "limited",
+      "access_note": "官方介绍页可读且给出此搜索链接；搜索端点在本次工具中返回403。未执行关键词检索，不能记作没有结果。",
+      "evidence_url": "https://euraxess.ec.europa.eu/jobs",
+      "web_regions": [
+        "europe",
+        "germany",
+        "netherlands",
+        "uk"
+      ],
+      "web_note": "查找招聘线索，再回到雇主公告核实岗位与条件。"
+    },
+    {
+      "source_id": "euraxess_hosting",
+      "name": "EURAXESS Hosting",
+      "url": "https://euraxess.ec.europa.eu/jobs/search?f%5B0%5D=offer_type%3Ahosting",
+      "regions": [
+        "以欧洲接收机构为主；以hosting公告地点为准"
+      ],
+      "disciplines": [
+        "研究领域多学科；以hosting公告为准"
+      ],
+      "opportunity_types": [
+        "potential_host"
+      ],
+      "source_role": "hosting_portal",
+      "search_method": "从 Jobs & Opportunities 的 Search for hosting 进入；按主题、机构和资助计划检索。核对是否愿意共同申请基金、内部截止和支持条件。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "介绍页公开可读；hosting搜索本次403。申请方式须读具体hosting说明。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "limited",
+      "access_note": "已从官方介绍页确认实际hosting搜索入口；该端点在本次工具中403。未把/how-to指南或旧/jobs/hosting路径当成已验证的搜索页。Hosting意向不保证现成经费或职位。",
+      "evidence_url": "https://euraxess.ec.europa.eu/jobs",
+      "web_regions": [
+        "europe",
+        "germany",
+        "netherlands",
+        "uk"
+      ],
+      "web_note": "寻找愿意接收或联合申请的团队，不保证已有职位或经费。"
+    },
+    {
+      "source_id": "academictransfer",
+      "name": "AcademicTransfer",
+      "url": "https://www.academictransfer.com/en/jobs/",
+      "regions": [
+        "荷兰"
+      ],
+      "disciplines": [
+        "荷兰高校和研究机构多学科"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "job_portal",
+      "search_method": "使用公开Jobs页面的关键词框，结合postdoc/postdoctoral与方法词；检查雇主、日期和语言要求。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "公开列表无需登录可读；首页账户和CV匹配功能不等同于浏览列表必须登录。关键词提交及申请未实测。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "公开Jobs列表、雇主和截止日期可读；未提交主题查询或进入申请。",
+      "evidence_url": "https://www.academictransfer.com/en/jobs/",
+      "web_regions": [
+        "europe",
+        "netherlands"
+      ],
+      "web_note": "查找招聘线索，再回到雇主公告核实岗位与条件。"
+    },
+    {
+      "source_id": "jobs_ac_uk",
+      "name": "jobs.ac.uk",
+      "url": "https://www.jobs.ac.uk/",
+      "regions": [
+        "英国为主；另有国际招聘，按地点筛选"
+      ],
+      "disciplines": [
+        "高校和研究机构多学科"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "job_portal",
+      "search_method": "在站内按postdoctoral/research fellow/research associate、主题和国家筛选；无法访问时可用域名限定搜索发现雇主公告。",
+      "login_requirement": {
+        "browsing": "unknown",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "403是本次访问限制，未证明网站必须登录；不尝试绕过访问控制。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "inaccessible",
+      "access_note": "首页与/search/本次均403。官方站点搜索索引可见研究岗位分类说明，不能代替实时岗位核验。",
+      "evidence_url": "https://www.jobs.ac.uk/",
+      "web_regions": [
+        "europe",
+        "uk"
+      ],
+      "web_note": "查找招聘线索，再回到雇主公告核实岗位与条件。"
+    },
+    {
+      "source_id": "jrec_in",
+      "name": "JREC-IN Portal",
+      "url": "https://jrecin.jst.go.jp/seek/SeekTop?ln=1",
+      "regions": [
+        "日本"
+      ],
+      "disciplines": [
+        "研究、教育和研究支持领域多学科"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "job_portal",
+      "search_method": "切换英语或日语，选择Researcher/Postdoc level，结合领域和地区；补搜博士研究員、特任研究員。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "公开入口与搜索表单可读，另有注册/登录入口；未提交查询或申请。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "入口、职位级别筛选和维护通知可读。单条公告语言、申请方式与国际申请资格仍需另查。",
+      "evidence_url": "https://jrecin.jst.go.jp/seek/SeekTop?ln=1",
+      "web_regions": [
+        "japan"
+      ],
+      "web_note": "查找招聘线索，再回到雇主公告核实岗位与条件。"
+    },
+    {
+      "source_id": "msca_pf",
+      "name": "MSCA Postdoctoral Fellowships",
+      "url": "https://marie-sklodowska-curie-actions.ec.europa.eu/actions/postdoctoral-fellowships",
+      "regions": [
+        "European PF：欧盟成员国或Horizon Europe关联国",
+        "Global PF：符合条件的第三国阶段及欧洲返回阶段"
+      ],
+      "disciplines": [
+        "多学科；Euratom相关研究另核对专门条件"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "fellowship_programme",
+      "search_method": "先分European/Global PF，核对博士完成时间、研究年限、流动性和接收机构；进入当年call与Funding & Tenders文件确认具体规则及截止。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "not_applicable",
+        "application": "unknown",
+        "note": "本页为公开规则摘要；未进入提交系统或测试申请登录。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "规则摘要可读，说明候选人与host共同申请。此条只维护基金路线入口，不声明当前轮次开放或候选人合格。",
+      "evidence_url": "https://marie-sklodowska-curie-actions.ec.europa.eu/actions/postdoctoral-fellowships",
+      "web_regions": [
+        "europe",
+        "germany",
+        "netherlands",
+        "uk"
+      ],
+      "web_note": "先核对当轮资助条件、接收机构与申请时点。"
+    },
+    {
+      "source_id": "rgc_jrfs",
+      "name": "RGC Junior Research Fellow Scheme",
+      "url": "https://www.ugc.edu.hk/eng/rgc/funding_opport/jrfs/",
+      "regions": [
+        "中国香港特别行政区；UGC资助大学"
+      ],
+      "disciplines": [
+        "人文、社会科学、商科",
+        "科学、医学、工程、技术"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "fellowship_programme",
+      "search_method": "读取当轮Call Circular、Operation Guide和大学内部提名要求；记录大学提名截止及RGC截止，不把研究者自行提交当成默认路线。",
+      "login_requirement": {
+        "browsing": "unknown",
+        "search": "not_applicable",
+        "application": "unknown",
+        "note": "直读页面本次超时；官方页面搜索索引可发现规则，提名系统未测试。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "inaccessible",
+      "access_note": "首页与How to Apply直读均超时；官方索引可见大学提名路线，但不能替代本轮完整公告核验。即便旧Open横幅仍在，也必须检查明确轮次和截止。",
+      "evidence_url": "https://www.ugc.edu.hk/eng/rgc/funding_opport/jrfs/",
+      "additional_evidence_urls": [
+        "https://www.ugc.edu.hk/eng/rgc/funding_opport/jrfs/how_to_apply.html"
+      ],
+      "web_regions": [
+        "china-hk"
+      ],
+      "web_note": "先核对当轮资助条件、接收机构与申请时点。"
+    },
+    {
+      "source_id": "hku_careers",
+      "name": "HKU Careers",
+      "url": "https://jobs.hku.hk/en/listing/",
+      "regions": [
+        "中国香港特别行政区；香港大学及具体公告工作地点"
+      ],
+      "disciplines": [
+        "香港大学各学院多学科"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "employer_careers",
+      "search_method": "筛选Senior Research Staff & Post-doctoral Fellow或Research Staff，结合学院与方法词；用Ref.编号保存身份，区分Research Assistant与Post-doctoral Fellow。",
+      "login_requirement": {
+        "browsing": "unknown",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "本次直接访问超时；搜索索引可见公开列表，未进入申请系统。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "inaccessible",
+      "access_note": "列表直读两次超时。官方域名索引可见分类与Ref.，仅作发现线索，未核验具体岗位开放状态。",
+      "evidence_url": "https://jobs.hku.hk/en/listing/",
+      "web_regions": [
+        "china-hk"
+      ],
+      "web_note": "机构自己的招聘入口；以具体公告的地点与条件为准。"
+    },
+    {
+      "source_id": "csiro_careers",
+      "name": "CSIRO Careers / CERC",
+      "url": "https://jobs.csiro.au/",
+      "regions": [
+        "澳大利亚；以岗位公告工作地点为准"
+      ],
+      "disciplines": [
+        "CSIRO范围内自然科学、工程与应用研究；逐条按公告判断"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "employer_careers",
+      "search_method": "使用CERC Postdoctoral and Engineering Fellowships分类与关键词；区分博士后和工程fellow路径，核实合同、签证及学历窗口。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "首页与CERC公开分类列表可读；候选人profile入口不等同于浏览必须登录。未进入申请。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "首页与CERC分类页面可读且列出具体职位；未测试关键词提交或逐岗资格。名为Fellowship的雇主招募须依据单条公告分类。",
+      "evidence_url": "https://jobs.csiro.au/go/CERC-Postdoctoral-and-Engineering-Fellowships/7829300/",
+      "web_regions": [
+        "australia"
+      ],
+      "web_note": "机构自己的招聘入口；以具体公告的地点与条件为准。"
+    },
+    {
+      "source_id": "cordis",
+      "name": "CORDIS",
+      "url": "https://cordis.europa.eu/",
+      "regions": [
+        "欧盟资助项目及其全球合作参与机构"
+      ],
+      "disciplines": [
+        "欧盟研发项目涵盖领域；不等于全部学科或全部研究经费"
+      ],
+      "opportunity_types": [
+        "potential_host"
+      ],
+      "source_role": "project_database",
+      "search_method": "按研究主题、项目缩写、机构和项目时间查Projects & Results；从项目页找参与机构和负责人，再查团队及雇主招聘页。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "not_applicable",
+        "note": "首页公开可读；项目搜索提交未实测。CORDIS不是岗位申请系统。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "项目库介绍和Projects & Results入口可读。项目存在、经费金额、合作伙伴关系均不能证明有博士后空缺。",
+      "evidence_url": "https://cordis.europa.eu/",
+      "web_regions": [
+        "europe",
+        "germany",
+        "netherlands",
+        "uk"
+      ],
+      "web_note": "从在研项目寻找研究团队，不代表团队正在招聘。"
+    },
+    {
+      "source_id": "dfg_gepris",
+      "name": "DFG GEPRIS",
+      "url": "https://gepris.dfg.de/",
+      "regions": [
+        "德国DFG资助项目及其参与者/机构"
+      ],
+      "disciplines": [
+        "DFG资助计划涉及的多学科；不是德国全部科研项目"
+      ],
+      "opportunity_types": [
+        "potential_host"
+      ],
+      "source_role": "project_database",
+      "search_method": "在启用JavaScript的浏览器按Projects、Persons、Institutions检索主题、负责人或机构；继续查大学/研究所招聘公告。",
+      "login_requirement": {
+        "browsing": "unknown",
+        "search": "unknown",
+        "application": "not_applicable",
+        "note": "入口在本次文本工具只显示JavaScript要求，未证明需要登录。项目库不办理岗位申请。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "limited",
+      "access_note": "GEPRIS说明入口仅返回JavaScript壳；DFG官方Research Information Systems说明可读，确认这是资助项目信息系统。未执行GEPRIS检索。",
+      "evidence_url": "https://www.dfg.de/en/funded-projects/information-systems",
+      "additional_evidence_urls": [
+        "https://gepris.dfg.de/about/recherche?lang=en"
+      ],
+      "web_regions": [
+        "europe",
+        "germany"
+      ],
+      "web_note": "从在研项目寻找研究团队，不代表团队正在招聘。"
+    },
+    {
+      "source_id": "nih_reporter",
+      "name": "NIH RePORTER",
+      "url": "https://reporter.nih.gov/",
+      "regions": [
+        "NIH资助项目及相关美国/国际参与机构；按项目过滤"
+      ],
+      "disciplines": [
+        "生物医学、健康及NIH资助的相关研究"
+      ],
+      "opportunity_types": [
+        "potential_host"
+      ],
+      "source_role": "project_database",
+      "search_method": "按项目主题、PI、机构和财政年度检索，再查PI团队/雇主公开招聘页；确认项目是否仍在执行，避免把旧项目当现有经费。",
+      "login_requirement": {
+        "browsing": "unknown",
+        "search": "unknown",
+        "application": "not_applicable",
+        "note": "RePORTER应用在本次工具只返回JavaScript要求；公开FAQ可读。未测试搜索或登录。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "limited",
+      "access_note": "使用RePORTER专门入口，区别于RePORT工具集合首页。官方FAQ确认其用途为查询NIH资助项目及成果；不是招聘或基金申请通知。",
+      "evidence_url": "https://report.nih.gov/faqs",
+      "additional_evidence_urls": [
+        "https://reporter.nih.gov/"
+      ],
+      "web_regions": [
+        "us"
+      ],
+      "web_note": "从在研项目寻找研究团队，不代表团队正在招聘。"
+    },
+    {
+      "source_id": "ukri_funding_finder",
+      "name": "UKRI Funding finder",
+      "url": "https://www.ukri.org/opportunity/",
+      "regions": [
+        "英国UKRI资助路线；境外参与和接收机构资格逐轮核对"
+      ],
+      "disciplines": [
+        "UKRI各资助理事会涉及领域"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "funding_portal",
+      "search_method": "筛Funding type=Fellowship，并按资助理事会、主题和Open/Upcoming/Closed过滤；再核对职业阶段、英国机构及个人/机构申请路线。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "公开列表与筛选项可读；过滤提交和申请系统未测试。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "Funding finder公开列表、funding type与状态筛选可读。本目录只将其中适合个人博士后路线的fellowship交给后续核验，不把一般项目grant当个人岗位。",
+      "evidence_url": "https://www.ukri.org/opportunity/",
+      "web_regions": [
+        "europe",
+        "uk"
+      ],
+      "web_note": "区分公开岗位、个人基金与项目资助，核对申请主体。"
+    },
+    {
+      "source_id": "jsps_international_postdoc",
+      "name": "JSPS Postdoctoral Fellowships for Research in Japan",
+      "url": "https://www.jsps.go.jp/english/e-fellow/",
+      "regions": [
+        "日本；海外研究者赴日路线"
+      ],
+      "disciplines": [
+        "按Standard/Short-term等具体项目的学科和资格范围确认"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "fellowship_programme",
+      "search_method": "先选Standard或符合来源地区条件的Short-term类别，再读当前年度Guidelines和Schedule，区分host提交与海外提名机构路线。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "not_applicable",
+        "application": "unknown",
+        "note": "公开项目入口可读，未测试电子申请系统。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "项目分类、Guidelines及Schedule导航可读。项目入口长期存在不证明任何轮次目前可提交；各类别国籍/地区与博士完成窗口须分别核对。",
+      "evidence_url": "https://www.jsps.go.jp/english/e-fellow/",
+      "web_regions": [
+        "japan"
+      ],
+      "web_note": "先核对当轮资助条件、接收机构与申请时点。"
+    },
+    {
+      "source_id": "fapesp_opportunities",
+      "name": "FAPESP Fellowship Opportunities",
+      "url": "https://oportunidades.fapesp.br/",
+      "regions": [
+        "巴西圣保罗州FAPESP资助相关机会；按具体公告地点确认"
+      ],
+      "disciplines": [
+        "FAPESP资助研究领域多学科"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "funding_portal",
+      "search_method": "筛Pós-Doutorado/Postdoctoral及主题，检查项目负责人公告与机构材料；区分项目招募和FAPESP制度性call。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "公开机会列表及筛选项可读；申请系统和各项目联系途径未测试。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "旧fapesp.br/oportunidades/跳转至此新入口。网站明确公告内容及选拔由对应项目PI负责，并非FAPESP机构性calls；仍需逐条核验。",
+      "evidence_url": "https://oportunidades.fapesp.br/",
+      "additional_evidence_urls": [
+        "https://fapesp.br/oportunidades/"
+      ],
+      "web_regions": [
+        "brazil"
+      ],
+      "web_note": "区分公开岗位、个人基金与项目资助，核对申请主体。"
+    },
+    {
+      "source_id": "humboldt_research_fellowship",
+      "name": "Humboldt Research Fellowship",
+      "url": "https://www.humboldt-foundation.de/en/apply/sponsorship-programmes/humboldt-research-fellowship",
+      "regions": [
+        "德国接收机构"
+      ],
+      "disciplines": [
+        "所有研究领域；具体计划规则为准"
+      ],
+      "opportunity_types": [
+        "fellowship"
+      ],
+      "source_role": "fellowship_programme",
+      "search_method": "核对postdoctoral与experienced researcher路径、host支持、博士年限与德国居留规则，并核对当前call容量/开放日期。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "not_applicable",
+        "application": "unknown",
+        "note": "公开说明页可读；没有注册账户或进入申请系统。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "项目说明可读。本次页面明确当前call不能创建新申请；入口可访问与申请开放必须分别记录。未来重跑需重核，不能沿用旧状态。",
+      "evidence_url": "https://www.humboldt-foundation.de/en/apply/sponsorship-programmes/humboldt-research-fellowship",
+      "web_regions": [
+        "europe",
+        "germany"
+      ],
+      "web_note": "先核对当轮资助条件、接收机构与申请时点。"
+    },
+    {
+      "source_id": "cgiar_careers",
+      "name": "CGIAR Careers",
+      "url": "https://www.cgiar.org/careers",
+      "regions": [
+        "CGIAR中心的全球工作地点；以具体雇主和公告为准"
+      ],
+      "disciplines": [
+        "农业、食物系统、土地、水、环境及相关社会经济研究"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "employer_careers",
+      "search_method": "从Vacancies进入并按主题及中心筛选；必要时到各中心招聘页查postdoc、scientist或research fellow，区分职位级别和雇主。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "Careers公开介绍页可读；Vacancies检索和各中心申请未测试。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "Careers、研究领域说明和Vacancies导航可读；未执行主题检索，不能宣称查过所有中心岗位。",
+      "evidence_url": "https://www.cgiar.org/careers",
+      "web_regions": [
+        "global"
+      ],
+      "web_note": "机构自己的招聘入口；以具体公告的地点与条件为准。"
+    },
+    {
+      "source_id": "nih_oite_jobs",
+      "name": "NIH OITE Job listings",
+      "url": "https://www.training.nih.gov/jobs/",
+      "regions": [
+        "美国为主；同时收录NIH之外雇主，按具体公告地点筛选"
+      ],
+      "disciplines": [
+        "生物医学、生命科学、健康及相关岗位"
+      ],
+      "opportunity_types": [
+        "advertised_job"
+      ],
+      "source_role": "job_portal",
+      "search_method": "按Keyword、Position type、Scientific focus area和Minimum education筛选；需要NIH岗位时显式选择Only show jobs within NIH。",
+      "login_requirement": {
+        "browsing": "not_required_observed",
+        "search": "unknown",
+        "application": "unknown",
+        "note": "公开列表及筛选项可读；未提交查询或进入具体申请系统。"
+      },
+      "checked_on": "2026-11-18",
+      "access_status": "accessible",
+      "access_note": "列表可读，包含NIH与外部机构岗位。出现在NIH门户不等于NIH雇主或统一公民身份规则，需回到具体公告核验。",
+      "evidence_url": "https://www.training.nih.gov/jobs/",
+      "web_regions": [
+        "us"
+      ],
+      "web_note": "查找招聘线索，再回到雇主公告核实岗位与条件。"
+    }
+  ]
+}
