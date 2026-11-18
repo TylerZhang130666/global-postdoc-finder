@@ -1,7 +1,7 @@
 import {safeURL,today} from './core.mjs';
-import {inferProfile,normalizeProfile,profileMatch,linkedinSearch} from './profile.mjs';
-import {expired} from './jobs.mjs?v=6';
-import {readCV} from './cv-reader.mjs';
+import {inferProfile,normalizeProfile,profileMatch,linkedinSearch} from './profile.mjs?v=7';
+import {expired} from './jobs.mjs?v=7';
+import {readCV} from './cv-reader.mjs?v=7';
 
 const KEY='global-postdoc-finder:profile:v1';
 const $=id=>document.getElementById(id);

@@ -1,6 +1,6 @@
 import {TYPES,PROGRESS,CRITERIA,RESULTS,ACCESS,today,safeURL,normalizeRecord,parseImport,mergeRecords,toCSV,matchSource,deadlineLabel} from './core.mjs';
-import {initJobs} from './jobs.mjs?v=6';
-import {initCareer} from './career.mjs?v=6';
+import {initJobs} from './jobs.mjs?v=7';
+import {initCareer} from './career.mjs?v=7';
 const $=id=>document.getElementById(id), KEY='global-postdoc-finder:workbench:v1';
 let records=[],sources=[],editing=null,editingSnapshot=null,rawStorage=null,storageBlocked=false,timer,jobUI,careerUI;
 const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;};
