@@ -24,7 +24,7 @@ class NoticeIndexTests(unittest.TestCase):
         self.assertNotIn('physics',result['search_terms'])
         self.assertNotIn('unrelated',result['search_terms'])
         self.assertEqual(result['deadline_at'],'2026-11-24')
-        self.assertEqual(result['detail_locator'],'tx_jobfair')
+        self.assertEqual(result['detail_locator'],'div:tx_jobfair')
 
     def test_mismatched_notice_title_is_not_used_for_search(self):
         doc=S.Document(self.html('Different vacancy')).root

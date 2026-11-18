@@ -5,3 +5,5 @@
 #refresh-jobs{border:0;background:none;padding:0;color:var(--green);font-size:11px;text-decoration:underline;text-underline-offset:3px}.coverage-content{max-height:65vh;overflow:auto}.coverage-source{padding:9px 0;border-bottom:1px solid var(--line)}.coverage-source p{margin:0 0 3px}.coverage-source small{font-size:10px;color:var(--muted)}.index-meta{flex-wrap:wrap}#refresh-status{font-size:10px}
 @media(max-width:760px){.index-meta{position:relative}#coverage{position:static}.coverage-content{left:0;right:0;top:calc(100% + 8px);width:100%;max-width:none}}
 .jobs-layout.no-results{grid-template-columns:1fr}.empty-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:22px}.body-match{font-size:11px;color:var(--green);margin:0 0 10px}
+
+.coverage-source small{display:block}

@@ -26,6 +26,12 @@ def phone_scan_text(line: str) -> str:
     # credentials, other hosts or phone/email text outside the URL.
     line = PUBLIC_JOB_URL.sub(lambda m: ' ' * len(m.group()), line)
     line = SVG_VIEWBOX.sub(lambda m: ' ' * len(m.group()), line)
+    if re.match(r'^\s*"title"\s*:',line):
+        # Recruitment cohort years in a JSON title are not a telephone number.
+        def cohort(match):
+            start,end=map(int,match.groups())
+            return ' '*len(match.group()) if 1900<=start<=end<=2100 and end-start<=4 else match.group()
+        line=re.sub(r'\b((?:19|20)\d{2})\s+-\s+((?:19|20)\d{2})\b',cohort,line)
     return ISO_DATE.sub(replace_date, line)
 def scan(root: Path) -> int:
     findings = 0

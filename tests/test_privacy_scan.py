@@ -9,6 +9,10 @@ SPEC.loader.exec_module(MODULE)
 
 
 class PhoneDateTests(unittest.TestCase):
+    def test_json_title_cohort_years_do_not_mask_adjacent_phone(self):
+        title='"title": "Postdoctoral positions '+' - '.join(('2026','2027'))+'"'
+        self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(title)))
+        self.assertIsNotNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(title+' +'+'1 202 '+'555 0123')))
     def test_public_job_id_is_not_phone_but_adjacent_phone_is_retained(self):
         url = 'https://jobs.csiro.au/job/example/' + ''.join(('12345', '67890')) + '/'
         self.assertIsNone(MODULE.PATTERNS['phone-like'].search(MODULE.phone_scan_text(url)))

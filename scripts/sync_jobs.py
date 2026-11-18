@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build a small searchable index from public recruitment lists; no model or key.
 
-Only listing metadata is retained. Requests respect robots.txt, crawl delays,
+Listing metadata and distinct search terms from verified notice bodies are retained. Requests respect robots.txt, crawl delays,
 same-host pagination and fixed page budgets. Failed sources retain dated cache
 entries, explicitly marked stale; a failed fetch never advances last_seen.
 """
@@ -305,19 +305,19 @@ def jobsuk(doc, source):
     return rows,recognized
 
 SOURCES = [
-    dict(id='academictransfer', name='AcademicTransfer', country='荷兰', url='https://www.academictransfer.com/en/jobs/?q=postdoc', pages=1, parser=academictransfer, scope='关键词 postdoc，最新一页'),
-    dict(id='hku', name='The University of Hong Kong', country='中国香港', url='https://jobs.hku.hk/en/search/?category=Senior+Research+Staff+%26+Post-doctoral+Fellow', pages=5, parser=hku, scope='博后类目，最多五页；仅保留博后标题'),
-    dict(id='csiro', name='CSIRO', country='澳大利亚', url='https://jobs.csiro.au/search/?q=postdoctoral', pages=2, parser=csiro, scope='关键词 postdoctoral，最多两页'),
-    dict(id='yale', name='Yale University', country='美国', url='https://postdocs.yale.edu/applicants/open-positions', pages=4, parser=yale, scope='公开机会，最多四页；仅保留博后标题'),
-    dict(id='stanford', name='Stanford University', country='美国', url='https://postdocs.stanford.edu/prospective/opportunities', pages=2, parser=stanford, scope='公开博后列表，最多两页'),
+    dict(id='academictransfer', name='AcademicTransfer', country='荷兰', url='https://www.academictransfer.com/en/jobs/?q=postdoc', pages=1, parser=academictransfer, detail_budget=10, scope='首屏10条；其余动态分页API禁止采集，未覆盖全部结果'),
+    dict(id='hku', name='The University of Hong Kong', country='中国香港', url='https://jobs.hku.hk/en/search/?category=Senior+Research+Staff+%26+Post-doctoral+Fellow', pages=5, parser=hku, detail_budget=15, scope='博后类目，最多五页；仅保留博后标题'),
+    dict(id='csiro', name='CSIRO', country='澳大利亚', url='https://jobs.csiro.au/search/?q=postdoctoral', pages=2, parser=csiro, detail_budget=10, scope='关键词 postdoctoral，最多两页'),
+    dict(id='yale', name='Yale University', country='美国', url='https://postdocs.yale.edu/applicants/open-positions', pages=40, parser=yale, detail_budget=30, scope='公开机会，最多四十页；仅保留博后标题'),
+    dict(id='stanford', name='Stanford University', country='美国', url='https://postdocs.stanford.edu/prospective/opportunities', pages=2, parser=stanford, detail_budget=12, scope='公开博后列表，最多两页'),
     dict(id='leibniz',name='Leibniz Association',country='德国',url='https://www.leibniz-gemeinschaft.de/en/careers/jobs',pages=1,parser=leibniz,detail_budget=25,scope='公开招聘列表中的博后标题；逐项索引公告正文'),
-    dict(id='mpg',name='Max Planck Society',country='德国',url='https://www.mpg.de/jobboard',pages=1,parser=mpg,detail_budget=10,scope='招聘列表首批可见岗位；逐项索引公告正文'),
-    dict(id='eth',name='ETH Zürich',country='未注明',url='https://jobs.ethz.ch/site/index',pages=1,parser=eth,scope='全部可见列表，按岗位地点区分瑞士和新加坡'),
-    dict(id='copenhagen',name='University of Copenhagen',country='丹麦',url='https://employment.ku.dk/all-vacancies/',pages=1,parser=table_jobs,link_pattern=r'\?show=\d+',scope='全部公开岗位中的博后标题'),
-    dict(id='kth',name='KTH',country='瑞典',url='https://www.kth.se/lediga-jobb/?l=en',pages=1,parser=table_jobs,link_pattern=r'/lediga-jobb/\d+',scope='全部公开岗位中的博后标题'),
-    dict(id='ubc',name='University of British Columbia',country='未注明',url='https://www.postdocs.ubc.ca/careers?order=field_deadline&sort=asc',pages=1,parser=table_jobs,link_pattern=r'/positions/\d+',scope='博后招聘表；境外岗位另标地点'),
-    dict(id='jrec',name='JREC-IN',country='日本',url='https://jrecin.jst.go.jp/seek/SeekJorSearch?fn=2&jobkind=00015&ln=1&dispcount=50',pages=6,parser=jrec,scope='研究员/博后类目，最多六页，仅保留明确博后标题'),
-    dict(id='jobsuk',name='jobs.ac.uk',country='未注明',url='https://www.jobs.ac.uk/categories/postdoc-jobs',pages=8,parser=jobsuk,scope='Postdoc分类，最多八页，海外地点不默认为英国'),
+    dict(id='mpg',name='Max Planck Society',country='德国',url='https://www.mpg.de/jobboard',pages=100,parser=mpg,detail_budget=25,scope='公开招聘列表及 Show more 分页；仅保留博后标题'),
+    dict(id='eth',name='ETH Zürich',country='未注明',url='https://jobs.ethz.ch/site/index',pages=1,parser=eth,detail_budget=35, scope='全部可见列表，按岗位地点区分瑞士和新加坡'),
+    dict(id='copenhagen',name='University of Copenhagen',country='丹麦',url='https://employment.ku.dk/all-vacancies/',pages=1,parser=table_jobs,link_pattern=r'\?show=\d+',detail_budget=20, scope='全部公开岗位中的博后标题'),
+    dict(id='kth',name='KTH',country='瑞典',url='https://www.kth.se/lediga-jobb/?l=en',pages=1,parser=table_jobs,link_pattern=r'/lediga-jobb/\d+',detail_budget=20, scope='全部公开岗位中的博后标题'),
+    dict(id='ubc',name='University of British Columbia',country='未注明',url='https://www.postdocs.ubc.ca/careers?order=field_deadline&sort=asc',pages=1,parser=table_jobs,link_pattern=r'/positions/\d+',detail_budget=15, scope='博后招聘表；境外岗位另标地点'),
+    dict(id='jrec',name='JREC-IN',country='日本',url='https://jrecin.jst.go.jp/seek/SeekJorSearch?fn=2&jobkind=00015&ln=1&dispcount=50',pages=6,parser=jrec,detail_budget=35, scope='研究员/博后类目，最多六页，仅保留明确博后标题'),
+    dict(id='jobsuk',name='jobs.ac.uk',country='未注明',url='https://www.jobs.ac.uk/categories/postdoc-jobs',pages=8,parser=jobsuk,detail_budget=30, scope='Postdoc分类，最多八页，海外地点不默认为英国'),
 ]
 
 class Client:
@@ -340,7 +340,10 @@ class Client:
             raise ValueError('Only same-host HTTPS requests are allowed')
         time.sleep(max(0, self.last + self.delay - time.monotonic()))
         self.last = time.monotonic()
-        with urlopen(Request(url, headers={'User-Agent': USER_AGENT, 'Accept': 'text/html,text/plain'}), timeout=25) as r:
+        headers={'User-Agent': USER_AGENT, 'Accept': 'text/html,text/plain'}
+        if self.host=='www.mpg.de' and re.fullmatch(r'/jobboard/\d+/more_items',urlsplit(url).path):
+            headers['X-Requested-With']='XMLHttpRequest'
+        with urlopen(Request(url, headers=headers), timeout=25) as r:
             if urlsplit(r.url).hostname != self.host:
                 raise ValueError('Unexpected cross-host redirect')
             return r.read(5_000_000).decode('utf-8', errors='replace')
@@ -351,6 +354,18 @@ class Client:
         return self.raw(url)
 
 def next_page(doc, url, host):
+    if host=='www.mpg.de':
+        control=next((a for a in doc.all('a') if a.attrs.get('data-loadmore-context')=='jobs'),None)
+        if control:
+            target=urljoin(url,control.attrs.get('href',''))
+            if urlsplit(target).hostname==host:
+                limit=int(control.attrs.get('data-loadmore-next-limit','5'))
+                offset=int(control.attrs.get('data-loadmore-first-limit',str(limit)))
+                return target+'?'+urlencode({'context':'jobs','limit':limit,'offset':offset})
+        parts=urlsplit(url);query=dict(parse_qsl(parts.query))
+        if re.fullmatch(r'/jobboard/\d+/more_items',parts.path) and doc.text():
+            query['offset']=str(int(query['offset'])+int(query['limit']))
+            return urlunsplit((parts.scheme,parts.netloc,parts.path,urlencode(query),''))
     if host=='jrecin.jst.go.jp':
         parts=urlsplit(url)
         query=dict(parse_qsl(parts.query))
@@ -380,6 +395,9 @@ def collect(source, now):
             doc = Document(client.get(url)).root
             found, count = source['parser'](doc, source)
             if not count:
+                if source['id']=='mpg' and not doc.text() and state['pages_read']:
+                    url=None
+                    break
                 raise ValueError('Listing structure not recognized; previous cache retained')
             recognized += count
             rows.extend(found)
@@ -387,6 +405,9 @@ def collect(source, now):
             url = next_page(doc, url, client.host)
         state.update(status='ok', count=len({r['id'] for r in rows}), observed_at=now,
                      coverage='page_limit' if url and url not in visited else 'end_of_list')
+        state['listing_entries']=recognized
+        state['excluded_by_title']=recognized-state['count']
+        if source['id']=='academictransfer':state['coverage']='dynamic_paging_unavailable'
     except Exception as e:
         state.update(status='partial' if rows else 'unavailable', count=len({r['id'] for r in rows}), error=str(e)[:180])
         if rows:
@@ -408,7 +429,7 @@ def combine(previous, batches, now):
                 jobs=sorted(records.values(), key=lambda r: (r.get('posted_at',''), r['title']), reverse=True))
 
 def main():
-    from notice_index import enrich_source
+    from notice_index import enrich_source,merge_cache_snapshots,body_coverage
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, default=ROOT/'web/data/jobs.json')
     p.add_argument('--use-published-cache', action='store_true')
@@ -418,10 +439,10 @@ def main():
         try:
             cache_url = 'https://tylerzhang130666.github.io/global-postdoc-finder/data/jobs.json'
             with urlopen(Request(cache_url, headers={'User-Agent': USER_AGENT}), timeout=20) as response:
-                cached = json.loads(response.read(5_000_000))
+                cached = json.loads(response.read(20_000_000))
             if (cached.get('schema_version') == 'postdoc-jobs/1' and isinstance(cached.get('jobs'), list)
                     and cached.get('generated_at', '') > previous.get('generated_at', '')):
-                previous = cached
+                previous = merge_cache_snapshots(previous,cached)
         except Exception:
             print('Published cache unavailable; using repository snapshot')
     now = datetime.now(timezone.utc).isoformat(timespec='seconds')
@@ -435,6 +456,7 @@ def main():
         batches = list(pool.map(sync_source, SOURCES))
     data = combine(previous, batches, now)
     for s in data['sources']:
+        s.update(body_coverage([r for r in data['jobs'] if r['source_id']==s['id']]))
         print(f'{s["id"]}: {s["status"]}, {s["count"]} jobs, {s["pages_read"]} pages' + (': '+s['error'] if 'error' in s else ''))
     if not any(s['status']=='ok' for s in data['sources']) and not previous:
         raise SystemExit('No usable source and no previous index; refusing an empty deployment')
