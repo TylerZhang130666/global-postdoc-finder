@@ -27,6 +27,12 @@ test('matching respects regions and reports evidence words without eligibility c
   assert.deepEqual(result.matched,['soil','GIS']);assert.equal(result.regionOK,false);
   assert.ok(!Object.hasOwn(result,'eligible'));assert.ok(!Object.hasOwn(result,'probability'));
 });
+test('manual Chinese terms and the short R language key match English indexed evidence',()=>{
+  const p=normalizeProfile({topics:'土壤',methods:'遥感，R',regions:'德国'});
+  const m=profileMatch({title:'Postdoc in soil research',country:'德国',search_terms:['r'],search_phrases:['remote sensing']},p);
+  assert.deepEqual(m.matched,['土壤','遥感','R']);assert.equal(m.regionOK,true);
+  assert.ok(new URL(linkedinSearch('jobs',{keywords:'土壤，遥感'})).searchParams.get('keywords').includes('soil remote sensing'));
+});
 test('LinkedIn integration creates ordinary search links, not account access',()=>{
   for(const kind of ['jobs','people','posts']){
     const u=new URL(linkedinSearch(kind,{keywords:'soil carbon',location:'Germany'}));

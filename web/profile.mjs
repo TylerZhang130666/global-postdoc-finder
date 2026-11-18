@@ -46,7 +46,12 @@ export function containsFeature(text,term){
   }
   return text.includes(term);
 }
-export function aliases(term){return TOPICS[term]??METHODS[term]??[term];}
+const FEATURE_ALIASES=new Map();
+for(const [key,names] of Object.entries({...TOPICS,...METHODS})){
+  const values=Object.freeze([key,...names]);
+  for(const name of values)FEATURE_ALIASES.set(normalized(name),values);
+}
+export function aliases(term){return FEATURE_ALIASES.get(normalized(term))??[term];}
 export function inferProfile(text){
   text=String(text).slice(0,100000).replace(/https?:\/\/\S+|\S+@\S+/g,' ');
   const detected=dict=>Object.entries(dict).filter(([,a])=>a.some(t=>containsFeature(text,t))).map(([k])=>k);
@@ -78,7 +83,7 @@ export function profileMatch(item,profile){
   return {matched:[...matchedTopics,...matchedMethods],missing,regionOK,rank:matchedTopics.length*3+matchedMethods.length*2};
 }
 export function linkedinSearch(kind,{keywords='',location=''}={}){
-  const clean=keywordList(keywords).join(' ').slice(0,220);
+  const clean=keywordList(keywords).map(term=>aliases(term)[0]).join(' ').slice(0,220);
   if(!clean)return '';
   const paths={jobs:'/jobs/search/',people:'/search/results/people/',posts:'/search/results/content/'};
   if(!paths[kind])throw new Error('未知的领英搜索类型');
