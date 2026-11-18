@@ -27,6 +27,7 @@ export function searchJobs(jobs,{query='',country='all',source='all',sort='recen
 const el=(tag,value,cls)=>{const n=document.createElement(tag);if(value)n.textContent=value;if(cls)n.className=cls;return n;};
 const $=id=>document.getElementById(id);
 const date=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleDateString('zh-CN',{year:'numeric',month:'2-digit',day:'2-digit'}):'';
+const timestamp=value=>value&&Number.isFinite(Date.parse(value))?new Date(value).toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'未记录';
 const external=(label,url,cls)=>{const a=el('a',label,cls);a.href=safeURL(url);a.target='_blank';a.rel='noopener noreferrer';return a;};
 
 export async function initJobs({onSave,isSaved}){
@@ -70,14 +71,30 @@ export async function initJobs({onSave,isSaved}){
   $('prev-page').addEventListener('click',()=>{page--;render();$('results-count').scrollIntoView({block:'start',behavior:'smooth'});});
   $('next-page').addEventListener('click',()=>{page++;render();$('results-count').scrollIntoView({block:'start',behavior:'smooth'});});
   $('close-detail').addEventListener('click',()=>$('job-dialog').close());
-  try{
-    const response=await fetch('./data/jobs.json');if(!response.ok)throw new Error();data=await response.json();if(!Array.isArray(data.jobs)||!Array.isArray(data.sources))throw new Error();
-    const countries=[...new Set(data.jobs.map(j=>j.country))].sort();for(const name of countries){const o=el('option',name);o.value=name;$('region').append(o);}
-    for(const s of data.sources){const option=el('option',s.name);option.value=s.id;$('source-filter').append(option);}
-    const observed=data.sources.map(s=>s.observed_at).filter(Boolean).sort().at(-1);$('index-date').textContent=observed?'收录于 '+date(observed):'暂无新收录';
-    $('coverage-list').replaceChildren();for(const s of data.sources){const count=data.jobs.filter(j=>j.source_id===s.id).length;const row=el('p','','coverage-row');row.append(external(s.name,s.url),el('span',`${count} 条 · ${s.status==='ok'?'已更新':s.status==='partial'?'部分更新':'上次记录'}`));$('coverage-list').append(row);}
-    $('index-total')?.replaceChildren(document.createTextNode(`${data.jobs.length} 条记录 · ${data.sources.length} 个来源`));
-    render();
-  }catch{$('results-count').textContent='暂时无法加载';$('job-results').replaceChildren(el('p','刷新页面重试。你的收藏不受影响。','search-empty'));}
+  function options(id,items,label){const selected=$(id).value;$(id).replaceChildren();for(const [value,title] of [['all',label],...items]){const o=el('option',title);o.value=value;$(id).append(o);}if(selected!=='all'&&!items.some(([value])=>value===selected)){const o=el('option',selected);o.value=selected;$(id).append(o);}$(id).value=selected;}
+  async function load(manual=false){
+    const button=$('refresh-jobs');if(button.disabled)return;button.disabled=true;button.textContent='读取中…';
+    try{
+      const response=await fetch('./data/jobs.json?refresh='+Date.now(),{cache:'no-store'});if(!response.ok)throw new Error();
+      const next=await response.json();if(!Array.isArray(next.jobs)||!Array.isArray(next.sources)||next.schema_version!=='postdoc-jobs/1')throw new Error();
+      const changed=next.generated_at!==data.generated_at;data=next;
+      options('region',[...new Set(data.jobs.map(j=>j.country))].sort().map(v=>[v,v]),'全部地区');
+      options('source-filter',data.sources.map(s=>[s.id,s.name]),'全部来源');
+      const observed=data.jobs.map(j=>j.last_seen).filter(Boolean).sort().at(-1);
+      $('index-date').textContent='最近收录 '+timestamp(observed);
+      $('coverage-list').replaceChildren();for(const s of data.sources){
+        const sourceJobs=data.jobs.filter(j=>j.source_id===s.id),row=el('div','','coverage-source');
+        const heading=el('p','','coverage-row');heading.append(external(s.name,s.url),el('span',`${sourceJobs.length} 条 · ${s.status==='ok'?'已更新':s.status==='partial'?'部分更新':'未更新'}`));
+        const seen=sourceJobs.map(j=>j.last_seen).sort().at(-1);row.append(heading,el('small',`${timestamp(seen)} · ${s.pages_read??0} 页 · ${s.scope??''}${s.coverage==='page_limit'?'（达到本版分页上限）':''}`));$('coverage-list').append(row);
+      }
+      $('index-total').textContent=`${data.jobs.length} 条记录 · ${data.sources.length} 个来源`;
+      $('refresh-status').textContent=manual?(changed?'岗位库已更新':'已检查，暂无新版本'):'';render();
+    }catch{
+      $('refresh-status').textContent='暂时无法更新，保留上次记录';
+      if(!data.jobs.length){$('results-count').textContent='暂时无法加载';$('job-results').replaceChildren(el('p','点击“刷新”重试。','search-empty'));}
+    }finally{button.disabled=false;button.textContent='刷新';}
+  }
+  $('refresh-jobs').addEventListener('click',()=>load(true));
+  await load();
   return {refresh:render};
 }

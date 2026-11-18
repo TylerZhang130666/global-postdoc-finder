@@ -15,7 +15,7 @@ from pathlib import Path
 import re
 import time
 from urllib.error import HTTPError
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import urljoin, urlsplit, parse_qsl, urlencode, urlunsplit
 from urllib.request import Request, urlopen
 from urllib.robotparser import RobotFileParser
 
@@ -82,7 +82,7 @@ def job(title, url, source, **fields):
     if urlsplit(url).hostname != urlsplit(source['url']).hostname:
         raise ValueError('Unexpected external job URL')
     return dict(id=sha256(url.encode()).hexdigest()[:20], title=title.strip(), url=url,
-                institution=fields.pop('institution', source['name']), country=source['country'],
+                institution=fields.pop('institution', source['name']), country=fields.pop('country', source['country']),
                 source_id=source['id'], source_name=source['name'], **fields)
 
 def academictransfer(doc, source):
@@ -165,12 +165,158 @@ def stanford(doc, source):
                         department=department, posted_at=posted_at, summary=excerpt(description)))
     return rows, recognized
 
+def parse_date(value):
+    for pattern, fmt in [(r'\d{4}-\d{2}-\d{2}', '%Y-%m-%d'), (r'\d{2}-\d{2}-\d{4}', '%d-%m-%Y'),
+                         (r'\d{4}/\d{2}/\d{2}', '%Y/%m/%d'), (r'\d{2}/\d{2}/\d{4}', '%d/%m/%Y'),
+                         (r'\d{2}\.\d{2}\.\d{4}', '%d.%m.%Y'), (r'[A-Z][a-z]+ \d{1,2}, \d{4}', '%B %d, %Y')]:
+        match = re.search(pattern, value)
+        if match:
+            try:
+                return datetime.strptime(match.group(), fmt).date().isoformat()
+            except ValueError:
+                pass
+    return ''
+
+def ancestor(node, tag=None, cls=None):
+    while node:
+        if (tag is None or node.tag == tag) and (cls is None or cls in node.attrs.get('class','').split()):
+            return node
+        node = node.parent
+    return Node()
+
+def table_jobs(doc, source):
+    rows, recognized = [], 0
+    for row in doc.all('tr'):
+        link = next((a for a in row.all('a') if re.search(source['link_pattern'], a.attrs.get('href',''))), None)
+        if not link:
+            continue
+        recognized += 1
+        if not POSTDOC.search(link.text()):
+            continue
+        cells = list(row.all('td'))
+        title, location, employer = link.text(), '', source['name']
+        country = source['country']
+        if source['id'] == 'copenhagen':
+            location = cells[2].text() if len(cells)>2 else ''
+        elif source['id'] == 'kth':
+            location = cells[1].text() if len(cells)>1 else ''
+            employer = cells[2].text() if len(cells)>2 else employer
+        elif source['id'] == 'ubc':
+            # This Canadian board also carries US positions; don't label all as Canada.
+            if 'UC Santa Barbara' in title:
+                country, employer = '美国', 'University of California, Santa Barbara'
+            elif 'UBC' in title or 'Vancouver' in title:
+                country = '加拿大'
+            else:
+                country = '未注明'
+        value = row.first('time').attrs.get('datetime', '')
+        rows.append(job(title, link.attrs['href'], source, institution=employer, country=country,
+                        department=location, deadline_at=value or parse_date(cells[-1].text() if cells else ''), summary=''))
+    return rows, recognized
+
+def eth(doc, source):
+    rows, recognized = [], 0
+    for card in doc.all('li', 'job-ad__item__wrapper'):
+        link = card.first('a', 'job-ad__item__link')
+        if not link.attrs.get('href'):
+            continue
+        recognized += 1
+        title = card.first('h3').text()
+        if not POSTDOC.search(title):
+            continue
+        detail = card.first('div', 'job-ad__item__details').text()
+        company = card.first('div', 'job-ad__item__company').text()
+        country = '新加坡' if 'Singapore' in detail else '瑞士' if re.search(r'Zürich|Zurich|Basel|Villigen|Lugano|Lausanne|Dübendorf|Davos', detail, re.I) else '未注明'
+        rows.append(job(title, link.attrs['href'], source, country=country, location=detail,
+                        department=company.split('|')[-1].strip(), posted_at=parse_date(company), summary=''))
+    return rows, recognized
+
+def leibniz(doc, source):
+    rows, recognized = [], 0
+    for link in doc.all('a'):
+        if '/careers/jobs/detail/job/show/Job/' not in link.attrs.get('href',''):
+            continue
+        recognized += 1
+        if POSTDOC.search(link.text()):
+            parent = link.parent.parent
+            rows.append(job(link.text(), link.attrs['href'], source,
+                            institution=parent.first('p').text() or source['name'], summary=''))
+    return rows, recognized
+
+def mpg(doc, source):
+    rows, recognized = [], 0
+    for heading in doc.all('h3'):
+        link = heading.first('a')
+        if not re.match(r'/\d+/', link.attrs.get('href','')):
+            continue
+        recognized += 1
+        if POSTDOC.search(link.text()):
+            box=ancestor(heading, cls='text-box')
+            rows.append(job(link.text(), link.attrs['href'], source,
+                            institution=box.first('div','institute').text() or source['name'],
+                            posted_at=parse_date(box.text()), summary=''))
+    return rows, recognized
+
+def jrec(doc, source):
+    rows, recognized, seen = [], 0, set()
+    for heading in doc.all('h5', 'card_title_min'):
+        link = heading.first('a')
+        url = link.attrs.get('href','')
+        if 'SeekJorDetail' not in url or url in seen:
+            continue
+        seen.add(url)
+        recognized += 1
+        title=link.text()
+        if not POSTDOC.search(title):
+            continue
+        card=ancestor(heading, cls='card_header')
+        body=card.text()
+        tail=body.split(title,1)[-1].strip()
+        deadline=re.search(r'End date of accepting applications\s*:\s*(\d{4}/\d{2}/\d{2})',body)
+        updated=re.search(r'Date of update\s*:\s*(\d{4}/\d{2}/\d{2})',body)
+        employer=heading.parent.first('div','my-1').text() or source['name']
+        rows.append(job(title,url,source,institution=employer,summary=excerpt(tail,160),
+                        deadline_at=parse_date(deadline.group(1)) if deadline else '',
+                        posted_at=parse_date(updated.group(1)) if updated else ''))
+    return rows,recognized
+
+def jobsuk(doc, source):
+    rows, recognized = [], 0
+    for card in doc.all('div','j-doorway__result'):
+        link=next((a for a in card.all('a') if '/job/' in a.attrs.get('href','')), None)
+        if not link:
+            continue
+        recognized+=1
+        if not POSTDOC.search(link.text()):
+            continue
+        # The board includes overseas jobs. Preserve its location text without
+        # inferring every result is in the UK just because of the portal domain.
+        info=card.first('div','j-doorway__result-info')
+        employer=info.first('div','j-doorway__employer').text()
+        location=info.first('div','j-doorway__location').text()
+        body=info.text()
+        if not employer:
+            blocks=[n.text() for n in info.children if isinstance(n,Node)]
+            employer=blocks[1] if len(blocks)>1 else source['name']
+        country='英国' if re.search(r'University of (?:Oxford|Cambridge|Exeter|Birmingham|Bristol|Nottingham|Leeds|Liverpool|Manchester|Edinburgh|Warwick|Southampton|Sheffield|York|Bath|Glasgow)|Imperial College London|King.s College London|University College London',employer) else '未注明'
+        rows.append(job(link.text(),link.attrs['href'],source,institution=employer,country=country,
+                        location=location,posted_at=parse_date(body),summary=excerpt(body.replace(link.text(),'').replace(employer,''),140)))
+    return rows,recognized
+
 SOURCES = [
     dict(id='academictransfer', name='AcademicTransfer', country='荷兰', url='https://www.academictransfer.com/en/jobs/?q=postdoc', pages=1, parser=academictransfer, scope='关键词 postdoc，最新一页'),
     dict(id='hku', name='The University of Hong Kong', country='中国香港', url='https://jobs.hku.hk/en/search/?category=Senior+Research+Staff+%26+Post-doctoral+Fellow', pages=5, parser=hku, scope='博后类目，最多五页；仅保留博后标题'),
     dict(id='csiro', name='CSIRO', country='澳大利亚', url='https://jobs.csiro.au/search/?q=postdoctoral', pages=2, parser=csiro, scope='关键词 postdoctoral，最多两页'),
     dict(id='yale', name='Yale University', country='美国', url='https://postdocs.yale.edu/applicants/open-positions', pages=4, parser=yale, scope='公开机会，最多四页；仅保留博后标题'),
     dict(id='stanford', name='Stanford University', country='美国', url='https://postdocs.stanford.edu/prospective/opportunities', pages=2, parser=stanford, scope='公开博后列表，最多两页'),
+    dict(id='leibniz',name='Leibniz Association',country='德国',url='https://www.leibniz-gemeinschaft.de/en/careers/jobs',pages=1,parser=leibniz,scope='公开招聘列表中的博后标题'),
+    dict(id='mpg',name='Max Planck Society',country='德国',url='https://www.mpg.de/jobboard',pages=1,parser=mpg,scope='招聘列表首批可见岗位'),
+    dict(id='eth',name='ETH Zürich',country='未注明',url='https://jobs.ethz.ch/site/index',pages=1,parser=eth,scope='全部可见列表，按岗位地点区分瑞士和新加坡'),
+    dict(id='copenhagen',name='University of Copenhagen',country='丹麦',url='https://employment.ku.dk/all-vacancies/',pages=1,parser=table_jobs,link_pattern=r'\?show=\d+',scope='全部公开岗位中的博后标题'),
+    dict(id='kth',name='KTH',country='瑞典',url='https://www.kth.se/lediga-jobb/?l=en',pages=1,parser=table_jobs,link_pattern=r'/lediga-jobb/\d+',scope='全部公开岗位中的博后标题'),
+    dict(id='ubc',name='University of British Columbia',country='未注明',url='https://www.postdocs.ubc.ca/careers?order=field_deadline&sort=asc',pages=1,parser=table_jobs,link_pattern=r'/positions/\d+',scope='博后招聘表；境外岗位另标地点'),
+    dict(id='jrec',name='JREC-IN',country='日本',url='https://jrecin.jst.go.jp/seek/SeekJorSearch?fn=2&jobkind=00015&ln=1&dispcount=50',pages=6,parser=jrec,scope='研究员/博后类目，最多六页，仅保留明确博后标题'),
+    dict(id='jobsuk',name='jobs.ac.uk',country='未注明',url='https://www.jobs.ac.uk/categories/postdoc-jobs',pages=8,parser=jobsuk,scope='Postdoc分类，最多八页，海外地点不默认为英国'),
 ]
 
 class Client:
@@ -179,7 +325,12 @@ class Client:
         self.delay = 1.0
         self.last = 0
         self.robot = RobotFileParser()
-        robots = self.raw('https://' + self.host + '/robots.txt')
+        try:
+            robots = self.raw('https://' + self.host + '/robots.txt')
+        except HTTPError as error:
+            if error.code not in {404, 410}:
+                raise
+            robots = ''
         self.robot.parse(robots.lstrip('\ufeff').splitlines())
         self.delay = max(1.0, self.robot.crawl_delay('PostdocFinder') or self.robot.crawl_delay('*') or 1)
 
@@ -199,10 +350,17 @@ class Client:
         return self.raw(url)
 
 def next_page(doc, url, host):
+    if host=='jrecin.jst.go.jp':
+        parts=urlsplit(url)
+        query=dict(parse_qsl(parts.query))
+        current=int(query.get('page','1'))
+        if any(a.attrs.get('data-pageno')==str(current+1) for a in doc.all('a')):
+            query['page']=str(current+1)
+            return urlunsplit((parts.scheme,parts.netloc,parts.path,urlencode(query),''))
     for link in doc.all('a'):
         a = link.attrs
         if ('next' in a.get('rel', '').split() or a.get('title','').lower() in {'go to next page', 'next page', 'more jobs'}
-                or link.text().lower().startswith('more jobs')):
+                or link.text().lower().startswith('more jobs') or link.text().strip().lower() in {'next','下一页'}):
             target = urljoin(url, a.get('href', ''))
             if urlsplit(target).hostname == host:
                 return target
@@ -226,7 +384,8 @@ def collect(source, now):
             rows.extend(found)
             state['pages_read'] += 1
             url = next_page(doc, url, client.host)
-        state.update(status='ok', count=len({r['id'] for r in rows}), observed_at=now)
+        state.update(status='ok', count=len({r['id'] for r in rows}), observed_at=now,
+                     coverage='page_limit' if url and url not in visited else 'end_of_list')
     except Exception as e:
         state.update(status='partial' if rows else 'unavailable', count=len({r['id'] for r in rows}), error=str(e)[:180])
         if rows:

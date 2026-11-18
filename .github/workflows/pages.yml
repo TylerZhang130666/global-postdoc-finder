@@ -7,7 +7,7 @@ on:
   pull_request:
     paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'references/source-catalog.json', '.github/workflows/pages.yml']
   schedule:
-    - cron: '23 7,19 * * *'
+    - cron: '23 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -34,7 +34,7 @@ jobs:
       - name: Check website logic
         run: node --test web/tests/*.test.mjs
       - name: Test source parsers
-        run: python -m unittest discover -s tests -p test_sync_jobs.py -v
+        run: python -m unittest discover -s tests -v
       - name: Sync public job listings
         if: github.event_name != 'pull_request'
         run: python scripts/sync_jobs.py --use-published-cache
@@ -51,6 +51,7 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           path: _site
+          retention-days: 1
   deploy:
     if: github.event_name != 'pull_request'
     needs: check

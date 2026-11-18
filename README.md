@@ -2,7 +2,7 @@
 
 **网页版：[博后搜索](https://tylerzhang130666.github.io/global-postdoc-finder/)**
 
-直接搜索已收录的博后岗位，筛选地区、查看详情、一键收藏。每天两次尝试同步公开招聘列表，无需模型 API；收藏保存在当前浏览器，支持 JSON / CSV 导出。[数据来源与部署说明](web/README.md)
+直接搜索已收录的博后岗位，筛选地区、查看详情、一键收藏。每小时尝试同步 13 个公开招聘来源，网页可刷新读取最新岗位库，无需模型 API；收藏保存在当前浏览器，支持 JSON / CSV 导出。[数据来源与部署说明](web/README.md)
 
 ## English overview
 
