@@ -1,7 +1,7 @@
 import {safeURL,today} from './core.mjs';
-import {inferProfile,normalizeProfile,profileMatch,linkedinSearch} from './profile.mjs?v=7';
-import {expired} from './jobs.mjs?v=7';
-import {readCV} from './cv-reader.mjs?v=7';
+import {inferProfile,normalizeProfile,profileMatch,linkedinSearch,aliases,containsFeature} from './profile.mjs?v=8';
+import {expired} from './jobs.mjs?v=8';
+import {readCV} from './cv-reader.mjs?v=8';
 
 const KEY='global-postdoc-finder:profile:v1';
 const $=id=>document.getElementById(id);
@@ -97,30 +97,38 @@ export function initCareer({onSaveHost,isSaved,onProfile,goToJobs}){
     return visible.length?'关联公开岗位公告 · 当前状态见原公告':'关联公告可能已过期或未更新';
   }
   function renderHosts(){
-    const query=$('host-query').value.trim().toLowerCase(),country=$('host-region').value;
-    let selected=hosts.filter(h=>(country==='all'||h.country===country)&&[h.name,h.institution,h.department,h.research_excerpt,...(h.topics??[]),...(h.search_terms??[])].join(' ').toLowerCase().includes(query));
+    const query=$('host-query').value.trim().toLowerCase(),country=$('host-region').value,institution=$('host-institution').value;
+    let selected=hosts.filter(h=>(country==='all'||h.country===country)&&(institution==='all'||h.institution===institution)&&(!query||aliases(query).some(term=>containsFeature([h.name,h.institution,h.department,h.research_excerpt,...(h.topics??[]),...(h.search_terms??[])].join(' '),term))));
     if($('host-mine').checked){selected=matching(selected).map(x=>x.item);}
     const pages=Math.max(1,Math.ceil(selected.length/12));hostPage=Math.min(hostPage,pages);
     $('host-count').textContent=`${selected.length} 位导师 / 团队`;$('host-results').replaceChildren();
     if(!selected.length)$('host-results').append(el('p','当前范围没有匹配。可清除关键词或调整地区。','search-empty'));
     for(const host of selected.slice((hostPage-1)*12,hostPage*12)){
-      const card=el('article','','host-card');card.append(el('h2',host.name),el('p',[host.institution,host.country,host.department].filter(Boolean).join(' · '),'muted'),el('p',host.research_excerpt||'研究内容见原网页。'),el('p',hostStatus(host),'host-status'));
+      const card=el('article','','host-card');card.append(el('h2',host.name),el('p',[host.institution,host.country,host.department].filter(Boolean).join(' · '),'muted'));
+      if(host.role)card.append(el('p',host.role,'muted'));
+      card.append(el('p',host.research_excerpt||'研究内容见原网页。'),el('p',hostStatus(host)+(host.stale?' · 旧资料，本次未更新':''),'host-status'));
       if(profile){const match=profileMatch(host,profile);if(match.matched.length)card.append(el('p','共同词：'+match.matched.join('、'),'match-reason'));}
-      const actions=el('div','','host-actions');actions.append(link(host.evidence_kind==='faculty_in_advert'?'查看导师相关公告 ↗':'研究主页 ↗',host.url));
-      actions.append(link('在领英找这位研究人员 ↗',linkedinSearch('people',{keywords:host.name+' '+host.institution})));
-      const save=el('button',isSaved(host.url)?'已收藏':'收藏团队','save-job');save.disabled=isSaved(host.url);save.addEventListener('click',()=>{onSaveHost(host);renderHosts();});actions.append(save);card.append(actions);
+      const actions=el('div','','host-actions');actions.append(link(host.evidence_kind==='faculty_in_advert'?'查看导师相关公告 ↗':host.research_scope==='directory_fields'?'查看官网名录 / 主页 ↗':'研究主页 ↗',host.url));
+      if(host.host_kind!=='research_group')actions.append(link('在领英找这位研究人员 ↗',linkedinSearch('people',{keywords:host.name.slice(0,70)})));
+      const save=el('button',isSaved(host.url,host.name)?'已收藏':'收藏团队','save-job');save.disabled=isSaved(host.url,host.name);save.addEventListener('click',()=>{onSaveHost(host);renderHosts();});actions.append(save);card.append(actions);
       const more=el('details');more.append(el('summary','来源与相关公告'),el('p',host.research_basis,'muted'),el('p','资料读取：'+host.checked_at?.slice(0,10),'muted'));
+      if(host.evidence_url)more.append(link('证据原页 ↗',host.evidence_url));
       for(const j of host.related_jobs??[]){more.append(link(j.title,j.url),el('p',j.deadline_at?'截止：'+j.deadline_at.slice(0,10):'截止未注明','muted'));}
       card.append(more);$('host-results').append(card);
     }
     $('host-pagination').hidden=pages<=1;$('host-page-label').textContent=`${hostPage} / ${pages}`;$('host-prev').disabled=hostPage<=1;$('host-next').disabled=hostPage>=pages;
   }
-  for(const id of ['host-query','host-region','host-mine'])$(id).addEventListener(id==='host-query'?'input':'change',()=>{hostPage=1;renderHosts();});
+  for(const id of ['host-query','host-region','host-institution','host-mine'])$(id).addEventListener(id==='host-query'?'input':'change',()=>{hostPage=1;renderHosts();});
   $('host-prev').addEventListener('click',()=>{hostPage--;renderHosts();});$('host-next').addEventListener('click',()=>{hostPage++;renderHosts();});
   $('host-mine').addEventListener('change',()=>{if($('host-mine').checked&&!profile){$('host-mine').checked=false;$('host-caption').textContent='请先到“我的匹配”保存研究画像。';renderHosts();}});
   async function loadHosts(){
     try{const response=await fetch('./data/hosts.json?refresh='+Date.now(),{cache:'no-store'});if(!response.ok)throw new Error();const d=await response.json();if(d.schema_version!=='postdoc-hosts/1'||!Array.isArray(d.hosts))throw new Error();hosts=d.hosts.filter(h=>safeURL(h.url));
-      $('host-caption').textContent=`收录 ${hosts.length} 位导师 / 团队，${new Set(hosts.map(h=>h.country)).size} 个地区。研究主页仅证明研究方向，招聘状态单独标注。`;
+      $('host-caption').textContent=`${hosts.length} 位导师 / 团队 · ${new Set(hosts.map(h=>h.institution)).size} 所机构 · ${new Set(hosts.map(h=>h.country)).size} 个地区。名录每周检查；是否招博后请看公告。`;
+      for(const institution of [...new Set(hosts.map(h=>h.institution))].sort()){const o=el('option',institution);o.value=institution;$('host-institution').append(o);}
+      $('host-coverage-list').replaceChildren();
+      for(const source of d.directory_sources??[]){
+        const item=el('li');item.append(link(source.institution,source.url),el('p',`${source.count??0} 条原始记录 · ${source.country} · ${source.status==='ok'?'已读完该名录':source.coverage==='page_limit'?'分批收录，尚未读完':source.status==='partial'?'部分读取':'本次未读到'} · ${source.observed_at?.slice(0,10)??'暂无成功读取日期'}`),el('p',source.scope,'muted'));$('host-coverage-list').append(item);
+      }
       for(const country of [...new Set(hosts.map(h=>h.country))].sort()){const o=el('option',country);o.value=country;$('host-region').append(o);}renderHosts();renderMatches();
     }catch{$('host-caption').textContent='导师库暂时无法加载，请刷新页面重试。';}
   }

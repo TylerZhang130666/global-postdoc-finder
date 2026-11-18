@@ -1,6 +1,6 @@
 import {TYPES,PROGRESS,CRITERIA,RESULTS,ACCESS,today,safeURL,normalizeRecord,parseImport,mergeRecords,toCSV,matchSource,deadlineLabel} from './core.mjs';
-import {initJobs} from './jobs.mjs?v=7';
-import {initCareer} from './career.mjs?v=7';
+import {initJobs} from './jobs.mjs?v=8';
+import {initCareer} from './career.mjs?v=8';
 const $=id=>document.getElementById(id), KEY='global-postdoc-finder:workbench:v1';
 let records=[],sources=[],editing=null,editingSnapshot=null,rawStorage=null,storageBlocked=false,timer,jobUI,careerUI;
 const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;};
@@ -53,11 +53,11 @@ window.addEventListener('storage',e=>{if(e.key!==KEY)return;try{records=e.newVal
 renderRecords();tab('search');
 fetch('./data/sources.json').then(r=>r.ok?r.json():null).then(data=>{sources=data?.sources??[];}).catch(()=>{});
 careerUI=initCareer({
-  isSaved:url=>records.some(r=>r.source_url===url&&r.opportunity_type==='potential_host'),
+  isSaved:(url,name)=>records.some(r=>r.source_url===url&&r.title===name&&r.opportunity_type==='potential_host'),
   onProfile:()=>jobUI?.refresh(),
   goToJobs:()=>{tab('search');$('keywords').value='';$('region').value='all';$('source-filter').value='all';$('job-sort').value='profile';jobUI?.refresh();},
   onSaveHost:host=>{
-    if(records.some(r=>r.source_url===host.url&&r.opportunity_type==='potential_host'))return;
+    if(records.some(r=>r.source_url===host.url&&r.title===host.name&&r.opportunity_type==='potential_host'))return;
     if(records.length>=1000){toast('收藏已满，请先导出整理。');return;}
     const record=normalizeRecord({title:host.name,institution:host.institution,country:host.country,source_url:host.url,opportunity_type:'potential_host',application_access:'not_applicable',evidence:host.research_excerpt+'\n研究资料读取：'+host.checked_at+'\n招聘状态未独立核实'});
     if(persist([record,...records])){renderRecords();toast('已收藏团队');}

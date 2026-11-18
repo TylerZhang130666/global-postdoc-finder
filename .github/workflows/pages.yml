@@ -3,9 +3,9 @@ name: Website checks and GitHub Pages
 on:
   push:
     branches: [main]
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   pull_request:
-    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
+    paths: ['web/**', 'scripts/build_web_catalog.py', 'scripts/sync_jobs.py', 'scripts/notice_index.py', 'scripts/notice_details.py', 'scripts/build_hosts.py', 'scripts/sync_hosts.py', 'references/host-seeds.json', 'references/source-catalog.json', '.github/workflows/pages.yml']
   schedule:
     - cron: '23 * * * *'
   workflow_dispatch:
@@ -38,7 +38,11 @@ jobs:
       - name: Sync public job listings
         if: github.event_name != 'pull_request'
         run: python scripts/sync_jobs.py --use-published-cache
-      - name: Check public website data
+      - name: Refresh official host directories
+        # Host evidence uses its own seven-day TTL; job refreshes cannot erase it.
+        run: python scripts/sync_hosts.py --use-published-cache
+        if: github.event_name != 'pull_request'
+      - name: Scan public website data
         run: python scripts/privacy_scan.py web
       - name: Prepare static files only
         if: github.event_name != 'pull_request'

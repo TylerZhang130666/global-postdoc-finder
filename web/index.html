@@ -4,7 +4,7 @@
 <meta name="description" content="搜索博后岗位。按方向、地区和机构筛选，查看公告，收藏岗位。">
 <meta name="color-scheme" content="light"><meta name="referrer" content="no-referrer">
 <title>博后搜索 · Global Postdoc Finder</title>
-<link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css?v=6"><script type="module" src="./app.mjs?v=7"></script>
+<link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css?v=7"><script type="module" src="./app.mjs?v=8"></script>
 </head><body>
 <a class="skip" href="#main">跳到内容</a>
 <div class="page">
@@ -20,7 +20,8 @@
 </section>
 <section id="hosts-panel" role="tabpanel" aria-labelledby="tab-hosts" hidden>
 <div class="section-heading"><h1>找导师 / 团队</h1></div><p id="host-caption" class="muted">读取导师库…</p>
-<div class="host-toolbar"><label class="sr-only" for="host-query">搜索导师</label><input id="host-query" type="search" placeholder="方向、姓名或机构"><label class="sr-only" for="host-region">导师地区</label><select id="host-region"><option value="all">全部地区</option></select><label class="checkbox"><input id="host-mine" type="checkbox">按我的画像</label></div>
+<details class="host-coverage"><summary>来源覆盖</summary><p class="muted">这是一份逐步扩充的机构名录，不是全球导师全集。部分资料仅有实验室或学科名称，未读完个人论文；研究组单独标注。名录中的“导师”身份不代表有博后经费。</p><ul id="host-coverage-list"></ul><p class="muted">另含招聘公告中的导师，以及人工核对的研究主页。NUS、WUR、墨尔本和斯泰伦博斯的候选名录本轮未能可靠读取，未批量加入。</p></details>
+<div class="host-toolbar"><label class="sr-only" for="host-query">搜索导师</label><input id="host-query" type="search" placeholder="方向、姓名或机构"><label class="sr-only" for="host-region">导师地区</label><select id="host-region"><option value="all">全部地区</option></select><label class="sr-only" for="host-institution">导师机构</label><select id="host-institution"><option value="all">全部机构</option></select><label class="checkbox"><input id="host-mine" type="checkbox">按我的画像</label></div>
 <h2 id="host-count" class="small-heading" aria-live="polite"></h2><div id="host-results" class="host-grid"></div><div id="host-pagination" class="pagination" hidden><button id="host-prev" class="secondary">上一页</button><span id="host-page-label"></span><button id="host-next" class="secondary">下一页</button></div>
 </section>
 <section id="profile-panel" role="tabpanel" aria-labelledby="tab-profile" hidden>
