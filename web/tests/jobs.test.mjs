@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {matchesJob,expired,searchJobs} from '../jobs.mjs';
 const job={title:'Postdoc in remote sensing',institution:'Example University',country:'荷兰',source_id:'test',url:'https://example.org/job',summary:'Soil carbon research',posted_at:'2026-11-01',deadline_at:'2026-12-01T12:00:00Z'};
+test('soil in a German notice body is searchable even when absent from title and summary',()=>{const german={...job,title:'Postdoctoral Researcher in Microbial Ecology',summary:'',country:'德国',search_terms:['plant','rhizosphere','soil']};assert.equal(matchesJob(german,'soil',false),false);assert.equal(matchesJob(german,'soil'),true);assert.equal(searchJobs([german],{query:'soil',country:'德国',now:new Date('2026-11-18')}).length,1);assert.equal(searchJobs([german],{query:'soil',country:'日本',now:new Date('2026-11-18')}).length,0);});
+test('Chinese direction phrases also search indexed notice phrases',()=>{assert.equal(matchesJob({...job,title:'Researcher',summary:'',search_terms:['learning','machine'],search_phrases:['machine learning']},'机器学习'),true);});
 test('Chinese topic search returns English titles without a model',()=>{assert.ok(matchesJob(job,'遥感'));assert.ok(matchesJob(job,'土壤 碳'));assert.ok(!matchesJob(job,'遥感 medicine'));});
 test('text search is case-insensitive and treats punctuation as text',()=>{assert.ok(matchesJob(job,'EXAMPLE'));assert.ok(!matchesJob(job,'<img>'));});
 test('country and source filters intersect rather than widening the search',()=>{assert.equal(searchJobs([job],{country:'美国'}).length,0);assert.equal(searchJobs([job],{country:'荷兰',source:'test',now:new Date('2026-11-18')}).length,1);});

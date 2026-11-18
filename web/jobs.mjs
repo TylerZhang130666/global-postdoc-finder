@@ -7,8 +7,9 @@ const TOPICS = {
   生物:['biology','biological'], 化学:['chemistry','chemical'], 物理:['physics','physical'], 医学:['medicine','medical'],
   土壤碳:['soil carbon','soil organic carbon'],生态学:['ecology','ecological'],生物信息学:['bioinformatics'],
 };
-export function matchesJob(job,query){
-  const haystack=[job.title,job.institution,job.department,job.country,job.location,job.summary].join(' ').toLowerCase();
+export function matchesJob(job,query,includeDetails=true){
+  const detail=includeDetails?[...(job.search_terms??[]),...(job.search_phrases??[])]:[];
+  const haystack=[job.title,job.institution,job.department,job.country,job.location,job.summary,...detail].join(' ').toLowerCase();
   return query.trim().toLowerCase().split(/\s+/).filter(Boolean).every(token=>(TOPICS[token]??[token]).some(word=>haystack.includes(word)));
 }
 export function expired(job,now=new Date()){
@@ -43,6 +44,7 @@ export async function initJobs({onSave,isSaved}){
     for(const [label,value] of [['截止',date(job.deadline_at)||'未注明'],['发布',date(job.posted_at)||'未注明'],['来源',job.source_name],['收录',date(job.last_seen)]]){facts.append(el('dt',label),el('dd',value));}
     block.append(facts);
     if(job.summary){block.append(el('h3','岗位摘要'),el('p',job.summary,'job-excerpt'));}
+    if(job.detail_status==='indexed')block.append(el('p','正文已纳入关键词检索 · '+date(job.detail_checked_at),'muted'));
     if(job.stale)block.append(el('p','该来源本轮未完整更新，以上是上次记录。','stale-note'));
     block.append(el('p','申请要求及是否仍在招聘，请以原公告为准。','detail-footnote'));
     return block;
@@ -52,11 +54,26 @@ export async function initJobs({onSave,isSaved}){
     filtered=searchJobs(data.jobs,{query:$('keywords').value,country:$('region').value,source:$('source-filter').value,sort:$('job-sort').value,hideExpired:$('hide-expired').checked});
     const pages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));page=Math.min(page,pages);
     $('results-count').textContent=`${filtered.length} 个岗位`;$('job-results').replaceChildren();
-    if(!filtered.length){const empty=el('div','','search-empty');empty.append(el('h2','没有找到岗位'),el('p','换个关键词，或试试英文。'));const reset=el('button','清除筛选','secondary');reset.addEventListener('click',()=>{$('search-form').reset();page=1;render();});empty.append(reset);$('job-results').append(empty);$('job-detail').replaceChildren();$('pagination').hidden=true;return;}
+    $('job-detail').hidden=!filtered.length;
+    document.querySelector('.jobs-layout').classList.toggle('no-results',!filtered.length);
+    if(!filtered.length){
+      const empty=el('div','','search-empty'),country=$('region').value,source=$('source-filter').value;
+      const base=searchJobs(data.jobs,{country,source,hideExpired:$('hide-expired').checked});
+      const sourceCount=new Set(base.map(j=>j.source_id)).size;
+      empty.append(el('h2','当前收录中暂无匹配'),el('p',`${country==='all'?'当前范围':country}收录 ${base.length} 个岗位，来自 ${sourceCount} 个来源。`),el('p','只检索已收录内容，不代表没有相关岗位。','muted'));
+      const buttons=el('div','','empty-actions');
+      if($('keywords').value.trim()){const clear=el('button','清除关键词','secondary');clear.addEventListener('click',()=>{$('keywords').value='';page=1;render();});buttons.append(clear);}
+      if(country!=='all'){
+        const elsewhere=searchJobs(data.jobs,{query:$('keywords').value,source,hideExpired:$('hide-expired').checked}).filter(j=>j.country!==country).length;
+        if(elsewhere){const other=el('button',`查看其他地区（${elsewhere}）`,'secondary');other.addEventListener('click',()=>{$('region').value='all';page=1;render();});buttons.append(other);}
+      }
+      empty.append(buttons);$('job-results').append(empty);$('job-detail').replaceChildren();$('pagination').hidden=true;return;
+    }
     for(const job of filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE)){
       const card=el('article','','job-card');card.dataset.id=job.id;
       const main=el('button','','job-select');main.type='button';main.append(el('p',job.institution,'job-employer'),el('h2',job.title),el('p',[job.country,job.department||job.location].filter(Boolean).join(' · '),'job-location'));
       main.addEventListener('click',()=>showDetail(job,true));card.append(main);
+      if($('keywords').value.trim()&&!matchesJob(job,$('keywords').value,false))card.append(el('p','匹配公告正文','body-match'));
       const bottom=el('div','','job-card-bottom');bottom.append(el('span',job.deadline_at?'截止 '+date(job.deadline_at):'截止未注明'),saveButton(job));card.append(bottom);if(job.stale)card.append(el('small','上次记录','stale-note'));$('job-results').append(card);
     }
     const visible=filtered.slice((page-1)*PAGE_SIZE,page*PAGE_SIZE);showDetail(visible.find(j=>j.id===selected?.id)??visible[0]);

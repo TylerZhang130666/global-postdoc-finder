@@ -239,7 +239,8 @@ def leibniz(doc, source):
         recognized += 1
         if POSTDOC.search(link.text()):
             parent = link.parent.parent
-            rows.append(job(link.text(), link.attrs['href'], source,
+            country='捷克' if re.search(r'\bPrague\b|\bPrag\b',link.text(),re.I) else source['country']
+            rows.append(job(link.text(), link.attrs['href'], source,country=country,
                             institution=parent.first('p').text() or source['name'], summary=''))
     return rows, recognized
 
@@ -309,8 +310,8 @@ SOURCES = [
     dict(id='csiro', name='CSIRO', country='澳大利亚', url='https://jobs.csiro.au/search/?q=postdoctoral', pages=2, parser=csiro, scope='关键词 postdoctoral，最多两页'),
     dict(id='yale', name='Yale University', country='美国', url='https://postdocs.yale.edu/applicants/open-positions', pages=4, parser=yale, scope='公开机会，最多四页；仅保留博后标题'),
     dict(id='stanford', name='Stanford University', country='美国', url='https://postdocs.stanford.edu/prospective/opportunities', pages=2, parser=stanford, scope='公开博后列表，最多两页'),
-    dict(id='leibniz',name='Leibniz Association',country='德国',url='https://www.leibniz-gemeinschaft.de/en/careers/jobs',pages=1,parser=leibniz,scope='公开招聘列表中的博后标题'),
-    dict(id='mpg',name='Max Planck Society',country='德国',url='https://www.mpg.de/jobboard',pages=1,parser=mpg,scope='招聘列表首批可见岗位'),
+    dict(id='leibniz',name='Leibniz Association',country='德国',url='https://www.leibniz-gemeinschaft.de/en/careers/jobs',pages=1,parser=leibniz,detail_budget=25,scope='公开招聘列表中的博后标题；逐项索引公告正文'),
+    dict(id='mpg',name='Max Planck Society',country='德国',url='https://www.mpg.de/jobboard',pages=1,parser=mpg,detail_budget=10,scope='招聘列表首批可见岗位；逐项索引公告正文'),
     dict(id='eth',name='ETH Zürich',country='未注明',url='https://jobs.ethz.ch/site/index',pages=1,parser=eth,scope='全部可见列表，按岗位地点区分瑞士和新加坡'),
     dict(id='copenhagen',name='University of Copenhagen',country='丹麦',url='https://employment.ku.dk/all-vacancies/',pages=1,parser=table_jobs,link_pattern=r'\?show=\d+',scope='全部公开岗位中的博后标题'),
     dict(id='kth',name='KTH',country='瑞典',url='https://www.kth.se/lediga-jobb/?l=en',pages=1,parser=table_jobs,link_pattern=r'/lediga-jobb/\d+',scope='全部公开岗位中的博后标题'),
@@ -407,6 +408,7 @@ def combine(previous, batches, now):
                 jobs=sorted(records.values(), key=lambda r: (r.get('posted_at',''), r['title']), reverse=True))
 
 def main():
+    from notice_index import enrich_source
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, default=ROOT/'web/data/jobs.json')
     p.add_argument('--use-published-cache', action='store_true')
@@ -423,8 +425,14 @@ def main():
         except Exception:
             print('Published cache unavailable; using repository snapshot')
     now = datetime.now(timezone.utc).isoformat(timespec='seconds')
+    def sync_source(source):
+        rows,state=collect(source,now)
+        unique=list({r['id']:r for r in rows}.values())
+        unique=enrich_source(unique,source,previous,Client,Document,parse_date,now)
+        state['body_indexed']=sum(r.get('detail_status')=='indexed' for r in unique)
+        return unique,state
     with ThreadPoolExecutor(max_workers=3) as pool:
-        batches = list(pool.map(lambda s: collect(s, now), SOURCES))
+        batches = list(pool.map(sync_source, SOURCES))
     data = combine(previous, batches, now)
     for s in data['sources']:
         print(f'{s["id"]}: {s["status"]}, {s["count"]} jobs, {s["pages_read"]} pages' + (': '+s['error'] if 'error' in s else ''))

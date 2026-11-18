@@ -1,5 +1,5 @@
 import {TYPES,PROGRESS,CRITERIA,RESULTS,ACCESS,today,safeURL,normalizeRecord,parseImport,mergeRecords,toCSV,matchSource,deadlineLabel} from './core.mjs';
-import {initJobs} from './jobs.mjs';
+import {initJobs} from './jobs.mjs?v=4';
 const $=id=>document.getElementById(id), KEY='global-postdoc-finder:workbench:v1';
 let records=[],sources=[],editing=null,editingSnapshot=null,rawStorage=null,storageBlocked=false,timer,jobUI;
 const text=(tag,value,cls)=>{const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;};
