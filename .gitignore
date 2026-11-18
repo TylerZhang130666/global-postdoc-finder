@@ -1,3 +1,4 @@
 __pycache__/
 *.py[cod]
 /replay.json
+/changes.json

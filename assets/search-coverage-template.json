@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "run_id": null,
+  "as_of": null,
+  "task_mode": null,
+  "requested_scope": {
+    "priority_regions": [],
+    "excluded_regions": [],
+    "opportunity_types": []
+  },
+  "channels": [],
+  "gaps": []
+}

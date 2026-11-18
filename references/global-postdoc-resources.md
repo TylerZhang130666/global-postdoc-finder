@@ -2,6 +2,8 @@
 
 Verify every opportunity on its authoritative page and record the access date. Search three channels separately: advertised jobs, candidate/host-applied fellowships, and host discovery. Never describe a fellowship as an existing job.
 
+For structured fields, recently checked entry points and access limitations, start with the [source catalog](source-catalog.md). This wider guide supplies additional regional sources and local role terms; entries below are not a record that those sites were searched in the current run.
+
 ## Global
 
 | Source | Type | URL |

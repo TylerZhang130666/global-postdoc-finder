@@ -5,9 +5,10 @@
 A reusable Codex workflow that helps researchers discover postdoctoral opportunities, verify source evidence, check eligibility, and prioritize next actions using their research profile and location preferences.
 
 - **Workflow:** profile → search → source verification → eligibility checks → weighted match score → action priority and tracker. Vacancies, fellowships, and potential hosts remain separate.
-- **Implementation:** Codex and its tools perform CV interpretation, web search, and evidence judgments. Standard-library Python helpers calculate scores and apply decision gates; they do not implement a standalone crawler or agent platform.
+- **Four tasks:** first-pass search, verification of a recruitment link/screenshot against official sources, saved-list refresh, and application evidence preparation. Each live run reports its coverage and unresolved checks.
+- **Implementation:** Codex and its tools perform CV interpretation, web search, and evidence judgments. Standard-library Python helpers calculate scores, apply decision gates and compare saved snapshots; they do not implement a standalone crawler or agent platform.
 - **Real example:** a 2026-11-18 global trial used 35 queries and produced 18 records: 11 vacancy notices/leads, 4 fellowships, and 3 hosts. Zero vacancies had all candidate eligibility and start-date conditions confirmed. [Read the case](examples/anonymous-trial-2026-11-18/case-study.md) or [inspect the structured results](examples/anonymous-trial-2026-11-18/original-results.json).
-- **Validation:** 23 local unit tests cover decision rules and the saved-case replay. [GitHub Actions configuration](.github/workflows/python-checks.yml) targets Linux/Python 3.11 and Windows/Python 3.13; local success does not establish a successful hosted run. Search accuracy, time savings, and comparative improvements have not been measured.
+- **Validation:** unit tests cover decision rules, saved-case replay and list comparison. [GitHub Actions](https://github.com/TylerZhang130666/global-postdoc-finder/actions) runs checks on Linux/Python 3.11 and Windows/Python 3.13. Search accuracy, time savings, and comparative improvements have not been measured.
 
 ### Actual report preview
 
@@ -54,7 +55,20 @@ Screenshot of the original HTML report, showing follow-up actions and a record w
 
 ## 快速使用
 
-安装后，在Codex中输入：
+安装后，可以直接使用这四种入口：
+
+```text
+使用 $global-postdoc-finder，根据我的背景，帮我做一次首轮搜索。
+使用 $global-postdoc-finder，核实这条小红书招聘信息/截图/链接，找到官方来源。
+使用 $global-postdoc-finder，更新我上次的岗位清单，告诉我哪些发生了变化。
+使用 $global-postdoc-finder，针对这个岗位，整理申请条件和我需要准备的材料。
+```
+
+**首轮不必先填一长份英文资料。** 给出研究方向与方法、毕业及入职时间、优先地区、目标机会、必要条件这五项即可；已有CV可直接提取。复制[中文简版模板](assets/candidate-quickstart-zh.md)，未知事项先留待核实，只有具体招聘涉及某项资格时再补问。
+
+单条核验只需提供可读取的帖子文字、截图或链接；没有个人背景时先查招聘真实性与状态，不计算个人匹配分。截图场景已有工作流说明，本轮实际演示验证的是官方链接，尚未做截图识别实测。
+
+想一次说明搜索优先级时，可以这样写：
 
 ```text
 使用 $global-postdoc-finder，根据我的CV寻找博士后。
@@ -92,7 +106,26 @@ Screenshot of the original HTML report, showing follow-up actions and a record w
 - 是否需要签证支持
 - 对合同期限、薪酬或工作形式的要求
 
-可以使用 [`assets/candidate-profile-template.md`](assets/candidate-profile-template.md) 填写候选人画像。只有某条真实招聘要求涉及国籍、居留、年龄或申请阶段时，才私下补充最少必要的资格回答；不需要为公开案例提供证件、完整生日或住址。未披露的信息保持未知，不根据语言、姓名或学历背景推断。
+上面是可按需补充的详细资料，并非开始搜索的必填表。首轮用[五项中文简版](assets/candidate-quickstart-zh.md)即可；需要完整梳理时，再用[详细画像模板](assets/candidate-profile-template.md)。只有某条真实招聘要求涉及国籍、居留、年龄或申请阶段时，才私下补充最少必要的资格回答；不需要为公开案例提供证件、完整生日或住址。未披露的信息保持未知，不根据语言、姓名或学历背景推断。
+
+## 这次使用会得到什么
+
+先回答三件事：**哪些机会值得看、哪些条件需要核实、下一步做什么**，再提供证据和结构化记录。
+
+| 场景 | 主要输出 | 示例或模板 |
+|---|---|---|
+| 首轮搜索 | 分开的岗位、基金与团队，待核实条件、行动和覆盖缺口 | [真实匿名试跑](examples/anonymous-trial-2026-11-18/case-study.md) |
+| 核验一条信息 | 原帖说法与官方证据对照、状态、截止及申请入口 | [科隆岗位本次重新核验](examples/single-lead-verification-2026-11-18.md)、[核验模板](assets/lead-verification-template.md) |
+| 更新旧清单 | 新增、重复、条件变化、关闭、未重新确认，保留前后判断 | [合成的差异演示](examples/list-refresh-demo/README.md)；不代表真实岗位变化 |
+| 申请准备 | 招聘要求—我的证据—待补材料；有依据的咨询或申请草稿 | [操作与对照表](references/task-workflows.md#application-preparation) |
+
+### 来源覆盖：没找到、没搜索、打不开分别记录
+
+[结构化来源目录](references/source-catalog.md)按地区、学科、机会类型、搜索方式、登录要求和最近检查情况选入口；机器可读数据在[JSON目录](references/source-catalog.json)。包含MSCA/Hosting、香港RGC与高校招聘、澳洲雇主入口，以及CORDIS、GEPRIS、NIH RePORTER、UKRI等不同用途来源。项目数据库用于发现团队，Hosting表示接收意向，都不等于现成岗位。
+
+每次联网报告单独记录实际查过什么：`未搜索`、`已查但无保留结果`、`已查并保留结果`、`部分可读`、`无法访问`。渠道首页能打开不等于站内查询成功；目录更新时间也不是每个岗位的核查时间。见[覆盖规则](references/task-workflows.md#search-coverage)、[空模板](assets/search-coverage-template.json)和[本次单条核验日志](examples/single-lead-coverage-2026-11-18.json)。
+
+更新旧清单时，搜索中不再出现某条记录只意味着需要重新确认；不能直接判为关闭。离线对比脚本保存新旧证据，只对输入做比较，本身不会重新访问网页。
 
 ## 结果如何分类
 
@@ -183,15 +216,16 @@ Screenshot of the original HTML report, showing follow-up actions and a record w
 
 ```text
 python scripts/evaluate_records.py examples/anonymous-trial-2026-11-18/normalized-records.json --as-of 2026-11-18 --out replay.json
+python scripts/diff_records.py examples/list-refresh-demo/previous.json examples/list-refresh-demo/current.json --as-of 2026-11-18 --out changes.json
 python -m unittest discover -s tests -v
 python scripts/privacy_scan.py .
 ```
 
 测试覆盖评分阈值、缺失资格、过期岗位、二手截止日、邀请阶段、未来轮次、重复ID、缺失分数与无效输入，以及隐私扫描中日期与电话模式的区分。测试通过只证明这些规则按输入执行，不能证明检索与人工解释准确。
 
-本地23项测试已通过，包括“官方已确认关闭，但未另设 `availability_closed=true`”的回归测试；规则修订为 `2026-11-18.1`。该情形下招聘岗位先排除、不计算匹配分；未核实的关闭线索及关闭的基金轮次保持独立处理。案例回放仍为0条A、4条B、7条C、4条确认排除及3个潜在团队。
+本版45项本地单元测试通过。评分规则保留“官方已确认关闭，但未另设 `availability_closed=true`”的回归测试，修订号为 `2026-11-18.1`。该情形下招聘岗位先排除、不计算匹配分；未核实的关闭线索及关闭的基金轮次保持独立处理。原案例离线回放仍为0条A、4条B、7条C、4条确认排除及3个潜在团队。新增清单对比测试验证稳定身份、重复、条件变化和“失踪不等于关闭”等边界；合成例子只用于规则演示。
 
-[自动测试配置](.github/workflows/python-checks.yml)在推送到 `main`、Pull Request或手动触发时执行单元测试、保存案例回归、离线回放CLI及文本隐私模式扫描。本地测试通过不等于GitHub托管环境通过，托管结果以Actions运行记录为准。
+[自动测试配置](.github/workflows/python-checks.yml)在推送到 `main`、Pull Request或手动触发时执行单元测试、保存案例回归、离线回放和清单对比CLI及文本隐私模式扫描。当前版本是否在托管环境通过，以对应提交的[Actions记录](https://github.com/TylerZhang130666/global-postdoc-finder/actions)为准。
 
 岗位追踪CSV模板保留原有35列，并追加资格状态、证据状态、阶段入口、时间原文与时区、原始分档、行动等级和解释等字段。结构化资格对象在CSV中以JSON文本存储；脚本直接使用JSON记录，字段定义见筛选参考。
 

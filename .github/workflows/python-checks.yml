@@ -37,5 +37,7 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Exercise offline replay CLI
         run: python scripts/evaluate_records.py examples/anonymous-trial-2026-11-18/normalized-records.json --as-of 2026-11-18 --out replay.json
+      - name: Exercise saved-list comparison CLI with synthetic data
+        run: python scripts/diff_records.py examples/list-refresh-demo/previous.json examples/list-refresh-demo/current.json --as-of 2026-11-18 --out changes.json
       - name: Scan supported text files for common privacy patterns
         run: python scripts/privacy_scan.py .

@@ -1,0 +1,61 @@
+[
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "new-label-01",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic soil structure postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/soil-structure-001?utm_source=demo",
+    "date_checked": "2026-11-18",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "action_priority": "A"
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "new-label-02",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic hydrology postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/hydrology-002",
+    "date_checked": "2026-11-18",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "deadline_date": "2026-12-15",
+    "deadline_verified": true
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "new-label-03",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic ecology postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/ecology-003",
+    "date_checked": "2026-11-18",
+    "evidence_status": "verified",
+    "application_access": "closed",
+    "source_locator": "Synthetic demo: official notice marked closed"
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "new-05",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic new image analysis postdoc",
+    "institution": "Synthetic Example Institute",
+    "source_url": "https://institute.example/jobs/image-analysis-005",
+    "date_checked": "2026-11-18",
+    "evidence_status": "verified",
+    "application_access": "open"
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "duplicate-new-05",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic new image analysis postdoc",
+    "institution": "Synthetic Example Institute",
+    "source_url": "https://institute.example/jobs/image-analysis-005",
+    "date_checked": "2026-11-18",
+    "evidence_status": "verified",
+    "application_access": "open"
+  }
+]

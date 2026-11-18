@@ -1,0 +1,49 @@
+[
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "old-01",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic soil structure postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/soil-structure-001",
+    "date_checked": "2026-11-10",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "action_priority": "B"
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "old-02",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic hydrology postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/hydrology-002",
+    "date_checked": "2026-11-10",
+    "evidence_status": "verified",
+    "application_access": "open",
+    "deadline_date": "2026-12-01",
+    "deadline_verified": true
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "old-03",
+    "opportunity_type": "advertised_job",
+    "title": "Synthetic ecology postdoc",
+    "institution": "Synthetic Example University",
+    "source_url": "https://university.example/vacancies/ecology-003",
+    "date_checked": "2026-11-10",
+    "evidence_status": "verified",
+    "application_access": "open"
+  },
+  {
+    "dataset_kind": "synthetic",
+    "record_id": "old-04",
+    "opportunity_type": "fellowship",
+    "title": "Synthetic fellowship not rechecked",
+    "institution": "Synthetic Example Foundation",
+    "source_url": "https://foundation.example/funding/round-004",
+    "date_checked": "2026-11-10",
+    "evidence_status": "verified",
+    "application_access": "open"
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "run_id": "single-lead-cologne-2026-11-18",
+  "as_of": "2026-11-18",
+  "task_mode": "single_lead_verification",
+  "requested_scope": {
+    "priority_regions": ["Germany: one specified University of Cologne notice"],
+    "excluded_regions": [],
+    "opportunity_types": ["advertised_job"]
+  },
+  "channels": [
+    {
+      "source_id": "cologne-official-notice",
+      "source_url": "https://jobportal.uni-koeln.de/ausschreibung/renderFile/2796?propertyName=flyer",
+      "regions": ["Germany"],
+      "opportunity_types": ["advertised_job"],
+      "status": "searched_retained_results",
+      "search_terms": ["Directly opened the saved official URL for Wiss2611-01"],
+      "date_checked": "2026-11-18",
+      "retained_record_ids": ["J03"],
+      "reason": "Read the one-page employer PDF; also followed its matching title from the employer listing. Date-only deadline retained."
+    },
+    {
+      "source_id": "cologne-official-portal",
+      "source_url": "https://jobportal.uni-koeln.de/?max=100&offset=00&sort=bewerbungsfrist",
+      "regions": ["Germany"],
+      "opportunity_types": ["advertised_job"],
+      "status": "searched_retained_results",
+      "search_terms": ["Wiss2611-01 in the employer listing; followed its application link"],
+      "date_checked": "2026-11-18",
+      "retained_record_ids": ["J03"],
+      "reason": "Matching record present; https://jobportal.uni-koeln.de/bewerben/2796 read without entering data. Registration and submission not tested. Other vacancies were not screened."
+    },
+    {
+      "source_id": "official-domain-web-query",
+      "source_url": "https://jobportal.uni-koeln.de/",
+      "regions": ["Germany"],
+      "opportunity_types": ["advertised_job"],
+      "status": "partial",
+      "search_terms": ["site.jobportal.uni-koeln.de \"Wiss2611-01\""],
+      "date_checked": "2026-11-18",
+      "retained_record_ids": ["J03"],
+      "reason": "External web query used for discovery; employer sources read separately. Not a completed search of every portal listing or result page."
+    }
+  ],
+  "gaps": [
+    "Single-lead scope only; no renewed global opportunity search.",
+    "Candidate eligibility, start-date flexibility and deadline time/timezone remain unresolved.",
+    "No social-media screenshot or registration/submission flow was tested."
+  ]
+}
